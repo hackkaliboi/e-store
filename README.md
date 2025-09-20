@@ -2,12 +2,9 @@
 
 A fully responsive e-commerce website built with Next.js 14, TypeScript, and Tailwind CSS. This project features a modern UI with product listings, detailed product pages, and a contact section.
 
-![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)
-![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)
-
-## 🚀 Live Demo
-
-**[https://vercel.com/a2digihubs-projects/v0-e-store](https://vercel.com/a2digihubs-projects/v0-e-store)**
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v3-lightblue?style=for-the-badge&logo=tailwindcss)
 
 ## 📋 Features
 
@@ -86,16 +83,20 @@ pnpm start
 
 This project uses shadcn/ui components which are built on top of Radix UI and Tailwind CSS. All components are located in the `components/ui/` directory and can be customized as needed.
 
-## 🔄 Automatic Sync
+## 🧪 Development
 
-This repository stays in sync with your deployed chats on [v0.app](https://v0.app). Any changes you make to your deployed app will be automatically pushed to this repository.
+This project uses pnpm for package management. To add new dependencies:
 
-## 🏗️ Continue Building
+```bash
+pnpm add <package-name>
+```
 
-Continue building your app on:
+To run linting:
 
-**[https://v0.app/chat/projects/cfJqsPVzB9U](https://v0.app/chat/projects/cfJqsPVzB9U)**
+```bash
+pnpm lint
+```
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.

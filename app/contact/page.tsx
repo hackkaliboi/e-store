@@ -11,16 +11,16 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl text-muted-foreground text-pretty">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4">Contact Us</h1>
+            <p className="text-lg sm:text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
               Get in touch with us for orders, support, or any questions you may have.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
             {/* WhatsApp Ordering */}
             <Card className="border-primary/20">
               <CardHeader>
@@ -40,7 +40,7 @@ export default function ContactPage() {
                     <li>Complete your order in minutes!</li>
                   </ol>
                 </div>
-                <Button size="lg" className="w-full" asChild>
+                <Button size="lg" className="w-full text-base" asChild>
                   <a
                     href="https://wa.me/1234567890?text=Hi! I'd like to place an order."
                     target="_blank"
@@ -61,7 +61,7 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <form className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name">Name</Label>
                       <Input id="name" placeholder="Your name" />
@@ -88,40 +88,40 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Information */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Phone className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold mb-2">Phone</h3>
-              <p className="text-muted-foreground">+1 (234) 567-8900</p>
+              <p className="text-muted-foreground text-sm sm:text-base">+1 (234) 567-8900</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold mb-2">Email</h3>
-              <p className="text-muted-foreground">hello@shopease.com</p>
+              <p className="text-muted-foreground text-sm sm:text-base">hello@shopease.com</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold mb-2">Business Hours</h3>
-              <p className="text-muted-foreground">Mon-Fri: 9AM-6PM</p>
+              <p className="text-muted-foreground text-sm sm:text-base">Mon-Fri: 9AM-6PM</p>
             </div>
           </div>
 
           {/* FAQ Section */}
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="mt-12 sm:mt-16">
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8">Frequently Asked Questions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">How do I place an order?</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">How do I place an order?</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm sm:text-base">
                     Simply click on any "Order via WhatsApp" button on our products. We'll guide you through the entire
                     process on WhatsApp.
                   </p>
@@ -129,10 +129,10 @@ export default function ContactPage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">What payment methods do you accept?</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">What payment methods do you accept?</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm sm:text-base">
                     We accept bank transfers, mobile money, and cash on delivery. Payment details will be shared via
                     WhatsApp.
                   </p>
@@ -140,10 +140,10 @@ export default function ContactPage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">How long does delivery take?</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">How long does delivery take?</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm sm:text-base">
                     Delivery typically takes 2-5 business days depending on your location. We'll provide tracking
                     information via WhatsApp.
                   </p>
@@ -151,10 +151,10 @@ export default function ContactPage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Do you offer warranties?</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">Do you offer warranties?</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm sm:text-base">
                     Yes! All our products come with manufacturer warranties. Contact us on WhatsApp for warranty claims
                     and support.
                   </p>

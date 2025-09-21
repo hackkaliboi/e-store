@@ -5,12 +5,13 @@ import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, Menu, X } from "lucide-react"
 import { useState } from "react"
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,13 +22,25 @@ export function Header() {
   }
 
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary">
             E STORE
           </Link>
-          <div className="flex items-center gap-6">
+
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-foreground hover:text-primary transition-colors">
               Home
             </Link>
@@ -62,6 +75,58 @@ export function Header() {
             </div>
           </div>
         </nav>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 space-y-4">
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/"
+                className="text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/shop"
+                className="text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Shop
+              </Link>
+              <Link
+                href="/contact"
+                className="text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              {isSearchOpen && (
+                <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1">
+                  <Input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-9 flex-1"
+                    autoFocus
+                  />
+                </form>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="flex items-center gap-2"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )

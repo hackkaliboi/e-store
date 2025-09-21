@@ -95,7 +95,7 @@ export function HeroCarousel() {
 
   return (
     <section
-      className="relative py-32 px-4 overflow-hidden"
+      className="relative py-20 sm:py-24 md:py-32 px-4 overflow-hidden"
       style={{
         backgroundImage: `url(${currentSlideData.backgroundImage})`,
         backgroundSize: "cover",
@@ -109,29 +109,29 @@ export function HeroCarousel() {
 
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-6 h-6 text-primary" />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-6 h-6 text-primary" />
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
       </button>
 
       <div className="container mx-auto text-center relative z-10">
         <div className="max-w-5xl mx-auto">
           <div key={currentSlide} className="animate-in fade-in duration-700">
-            <div className="inline-flex items-center px-4 py-2 bg-primary/20 rounded-full text-primary-foreground font-medium text-sm mb-8 border border-primary/30">
+            <div className="inline-flex items-center px-3 py-1 sm:px-4 sm:py-2 bg-primary/20 rounded-full text-primary-foreground font-medium text-xs sm:text-sm mb-6 sm:mb-8 border border-primary/30">
               <span className="w-2 h-2 bg-primary-foreground rounded-full mr-2 animate-pulse"></span>
               {currentSlideData.badge}
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 text-balance leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 text-balance leading-tight">
               <span className={`${currentSlideData.titleColor} font-extrabold drop-shadow-lg`}>
                 {currentSlideData.title}
               </span>
@@ -139,14 +139,14 @@ export function HeroCarousel() {
               <span className="text-white font-extrabold drop-shadow-lg">{currentSlideData.subtitle}</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-4xl mx-auto text-pretty leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 sm:mb-12 max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto text-pretty leading-relaxed">
               {currentSlideData.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
               <Button
                 size="lg"
-                className="text-lg px-12 py-8 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                className="text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-8 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
                 <Link href={currentSlideData.primaryButton.href}>{currentSlideData.primaryButton.text}</Link>
@@ -155,7 +155,7 @@ export function HeroCarousel() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-12 py-8 h-auto rounded-full bg-transparent border-2 hover:bg-primary/5"
+                className="text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-8 h-auto rounded-full bg-transparent border-2 hover:bg-primary/5"
                 asChild
               >
                 <a href={currentSlideData.secondaryButton.href} target="_blank" rel="noopener noreferrer">
@@ -165,12 +165,12 @@ export function HeroCarousel() {
             </div>
           </div>
 
-          <div className="mt-16 flex items-center justify-center gap-3">
+          <div className="mt-12 sm:mt-16 flex items-center justify-center gap-2 sm:gap-3">
             {heroSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                   index === currentSlide ? "bg-primary scale-125" : "bg-primary/30 hover:bg-primary/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -178,17 +178,17 @@ export function HeroCarousel() {
             ))}
           </div>
 
-          <div className="mt-12 flex items-center justify-center gap-8 text-sm text-gray-200">
+          <div className="mt-8 sm:mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-gray-200">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
               <span>Instant Ordering</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
               <span>Premium Quality</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-purple-500 rounded-full"></div>
               <span>Fast Delivery</span>
             </div>
           </div>

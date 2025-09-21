@@ -35,6 +35,7 @@ export function Header() {
             size="sm"
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -78,7 +79,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-4">
+          <div className="md:hidden mt-4 pb-4 space-y-4 absolute left-0 right-0 top-full bg-background border-b border-border px-4 shadow-lg">
             <div className="flex flex-col gap-3">
               <Link
                 href="/"
@@ -114,16 +115,22 @@ export function Header() {
                     className="h-9 flex-1"
                     autoFocus
                   />
+                  <Button type="submit" size="sm" className="ml-2">
+                    <Search className="h-4 w-4" />
+                  </Button>
                 </form>
               )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="flex items-center gap-2"
-              >
-                <Search className="h-4 w-4" />
-              </Button>
+              {!isSearchOpen && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  className="flex items-center gap-2 w-full"
+                >
+                  <Search className="h-4 w-4" />
+                  Search
+                </Button>
+              )}
             </div>
           </div>
         )}

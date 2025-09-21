@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
 import { products } from "@/lib/products"
+import { formatCurrency } from "@/lib/utils"
 
 export default function HomePage() {
   const featuredProducts = products.slice(0, 6)
@@ -52,7 +53,7 @@ export default function HomePage() {
                       {product.description}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xl sm:text-2xl font-bold text-primary">${product.price}</span>
+                      <span className="text-xl sm:text-2xl font-bold text-primary">{formatCurrency(product.price)}</span>
                       <Button size="sm" className="rounded-full text-xs sm:text-sm" asChild>
                         <Link href={`/product/${product.id}`}>View Details</Link>
                       </Button>

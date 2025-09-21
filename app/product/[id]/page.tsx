@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { formatCurrency } from "@/lib/utils"
 
 interface ProductPageProps {
   params: {
@@ -21,7 +22,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   const relatedProducts = getRelatedProducts(product.id, product.category)
-  const whatsappMessage = `Hi! I'm interested in ${product.name} - ${product.description}. Price: $${product.price}. Can you help me with the order?`
+  const whatsappMessage = `Hi! I'm interested in ${product.name} - ${product.description}. Price: ${formatCurrency(product.price)}. Can you help me with the order?`
   const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
@@ -55,7 +56,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 {product.category}
               </Badge>
               <h1 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 text-balance">{product.name}</h1>
-              <p className="text-xl sm:text-2xl text-primary font-bold mb-3 sm:mb-4">${product.price}</p>
+              <p className="text-xl sm:text-2xl text-primary font-bold mb-3 sm:mb-4">{formatCurrency(product.price)}</p>
               <p className="text-muted-foreground text-base sm:text-lg leading-relaxed text-pretty">{product.description}</p>
             </div>
 

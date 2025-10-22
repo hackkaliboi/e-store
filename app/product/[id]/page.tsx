@@ -1,12 +1,13 @@
 import { Header } from "@/components/header"
 import { ProductCard } from "@/components/product-card"
-import { getProductById, getRelatedProducts } from "@/lib/products"
+import { getProductById, getRelatedProducts } from "@/lib/product-manager"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { Product } from "@/lib/products"
 
 interface ProductPageProps {
   params: {
@@ -15,13 +16,13 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductById(params.id)
+  const product: Product | undefined = getProductById(params.id)
 
   if (!product) {
     notFound()
   }
 
-  const relatedProducts = getRelatedProducts(product.id, product.category)
+  const relatedProducts: Product[] = getRelatedProducts(product.id, product.category)
   const whatsappMessage = `Hi! I'm interested in ${product.name} - ${product.description}. Price: ${formatCurrency(product.price)}. Can you help me with the order?`
   const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`
 

@@ -2,25 +2,15 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-
-interface Product {
-  id: string
-  name: string
-  price: number
-  image: string
-  description: string
-}
+import { Product } from "@/lib/products"
 
 interface ProductCardProps {
   product: Product
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const whatsappMessage = `Hi! I'm interested in ${product.name} - ${product.description}. Price: ${formatCurrency(product.price)}. Can you help me with the order?`
-  const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`
-
   return (
-    <Card className="group overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+    <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow h-full">
       <div className="aspect-square overflow-hidden">
         <img
           src={product.image || "/placeholder.svg"}
@@ -28,15 +18,12 @@ export function ProductCard({ product }: ProductCardProps) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <CardContent className="p-4 flex-grow flex flex-col">
-        <h3 className="font-semibold text-lg mb-2 text-balance">{product.name}</h3>
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2 flex-grow">{product.description}</p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold text-primary">{formatCurrency(product.price)}</span>
-          <Button size="sm" asChild>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              Order
-            </a>
+      <CardContent className="p-4">
+        <h3 className="font-medium text-sm mb-1">{product.name}</h3>
+        <div className="flex items-center justify-between">
+          <span className="text-base font-semibold text-primary">{formatCurrency(product.price)}</span>
+          <Button size="sm" variant="outline" className="text-xs h-7 px-2" asChild>
+            <Link href={`/product/${product.id}`}>View</Link>
           </Button>
         </div>
       </CardContent>

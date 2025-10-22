@@ -8,57 +8,35 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 const heroSlides = [
   {
     id: 1,
-    badge: "New Products Available Now",
     title: "Premium Tech,",
-    subtitle: "Instant Orders",
+    subtitle: "Simplified Shopping",
     description:
-      "Experience the future of e-commerce with our revolutionary WhatsApp ordering system. Premium technology products delivered with zero hassle, maximum convenience.",
+      "Experience effortless shopping with our curated selection of premium tech products and instant WhatsApp ordering.",
     primaryButton: {
-      text: "🚀 Explore Products",
+      text: "Explore Products",
       href: "/shop",
     },
     secondaryButton: {
-      text: "💬 Chat on WhatsApp",
-      href: "https://wa.me/1234567890?text=Hi! I'd like to learn more about your products.",
+      text: "Contact Us",
+      href: "/contact",
     },
-    titleColor: "text-cyan-400",
-    backgroundImage: "/images/hero/slide-1-bg.jpg",
+    titleColor: "text-primary",
   },
   {
     id: 2,
-    badge: "Limited Time Offer",
-    title: "Save Big on",
-    subtitle: "Tech Essentials",
+    title: "Quality Products,",
+    subtitle: "Fast Delivery",
     description:
-      "Get up to 30% off on our most popular tech products. From wireless headphones to smart watches, find everything you need at unbeatable prices.",
+      "Get premium tech essentials delivered quickly with our streamlined ordering process and reliable shipping.",
     primaryButton: {
-      text: "🔥 Shop Sale",
+      text: "Shop Now",
       href: "/shop",
     },
     secondaryButton: {
-      text: "💬 Get Deals Info",
-      href: "https://wa.me/1234567890?text=Hi! I'd like to know more about your current deals and offers.",
+      text: "Learn More",
+      href: "/contact",
     },
-    titleColor: "text-orange-400",
-    backgroundImage: "/images/hero/slide-2-bg.jpg",
-  },
-  {
-    id: 3,
-    badge: "Fast & Reliable",
-    title: "Express Delivery",
-    subtitle: "Guaranteed",
-    description:
-      "Order today and receive your products within 24-48 hours. Track your delivery in real-time through WhatsApp notifications and enjoy hassle-free shopping.",
-    primaryButton: {
-      text: "⚡ Order Now",
-      href: "/shop",
-    },
-    secondaryButton: {
-      text: "📦 Track Order",
-      href: "https://wa.me/1234567890?text=Hi! I'd like to track my order status.",
-    },
-    titleColor: "text-blue-400",
-    backgroundImage: "/images/hero/slide-3-bg.jpg",
+    titleColor: "text-primary",
   },
 ]
 
@@ -71,7 +49,7 @@ export function HeroCarousel() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
-    }, 5000)
+    }, 7000)
 
     return () => clearInterval(interval)
   }, [isAutoPlaying])
@@ -94,59 +72,46 @@ export function HeroCarousel() {
   const currentSlideData = heroSlides[currentSlide]
 
   return (
-    <section
-      className="relative py-20 sm:py-24 md:py-32 px-4 overflow-hidden"
-      style={{
-        backgroundImage: `url(${currentSlideData.backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="absolute inset-0 bg-black/60"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-background/20 via-transparent to-primary/10"></div>
+    <section className="relative py-20 sm:py-24 px-4 overflow-hidden bg-gradient-to-br from-background to-muted">
+      {/* Decorative elements */}
+      <div className="absolute top-10 right-10 w-24 h-24 rounded-full bg-primary/10 blur-2xl"></div>
+      <div className="absolute bottom-10 left-10 w-32 h-32 rounded-full bg-muted-foreground/5 blur-3xl"></div>
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
       <button
         onClick={prevSlide}
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
+        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300 shadow-sm"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
+        <ChevronLeft className="w-5 h-5 text-primary" />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 bg-background/80 backdrop-blur-sm border-2 border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300"
+        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300 shadow-sm"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
+        <ChevronRight className="w-5 h-5 text-primary" />
       </button>
 
       <div className="container mx-auto text-center relative z-10">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div key={currentSlide} className="animate-in fade-in duration-700">
-            <div className="inline-flex items-center px-3 py-1 sm:px-4 sm:py-2 bg-primary/20 rounded-full text-primary-foreground font-medium text-xs sm:text-sm mb-6 sm:mb-8 border border-primary/30">
-              <span className="w-2 h-2 bg-primary-foreground rounded-full mr-2 animate-pulse"></span>
-              {currentSlideData.badge}
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 text-balance leading-tight">
-              <span className={`${currentSlideData.titleColor} font-extrabold drop-shadow-lg`}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              <span className={`${currentSlideData.titleColor} block mb-2`}>
                 {currentSlideData.title}
               </span>
-              <br />
-              <span className="text-white font-extrabold drop-shadow-lg">{currentSlideData.subtitle}</span>
+              <span className="text-foreground">{currentSlideData.subtitle}</span>
             </h1>
 
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 sm:mb-12 max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto text-pretty leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
               {currentSlideData.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-8 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                className="text-base px-8 py-3 h-auto rounded-full font-medium shadow-sm hover:shadow-md transition-shadow"
                 asChild
               >
                 <Link href={currentSlideData.primaryButton.href}>{currentSlideData.primaryButton.text}</Link>
@@ -155,42 +120,29 @@ export function HeroCarousel() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base sm:text-lg px-6 sm:px-12 py-4 sm:py-8 h-auto rounded-full bg-transparent border-2 hover:bg-primary/5"
+                className="text-base px-8 py-3 h-auto rounded-full font-medium border-2"
                 asChild
               >
-                <a href={currentSlideData.secondaryButton.href} target="_blank" rel="noopener noreferrer">
+                <Link href={currentSlideData.secondaryButton.href}>
                   {currentSlideData.secondaryButton.text}
-                </a>
+                </Link>
               </Button>
             </div>
           </div>
 
-          <div className="mt-12 sm:mt-16 flex items-center justify-center gap-2 sm:gap-3">
+          <div className="mt-16 flex items-center justify-center gap-3">
             {heroSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide ? "bg-primary scale-125" : "bg-primary/30 hover:bg-primary/50"
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentSlide 
+                    ? "bg-primary w-8 rounded-full" 
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
-          </div>
-
-          <div className="mt-8 sm:mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-gray-200">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
-              <span>Instant Ordering</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
-              <span>Premium Quality</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-purple-500 rounded-full"></div>
-              <span>Fast Delivery</span>
-            </div>
           </div>
         </div>
       </div>

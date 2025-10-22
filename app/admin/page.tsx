@@ -1,346 +1,205 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { 
-  addProduct, 
-  getAllProducts, 
-  updateProduct, 
-  deleteProduct, 
-  authenticateAdmin 
-} from "@/lib/product-manager"
+import {
+  Package,
+  BarChart3,
+  Users,
+  ShoppingCart,
+  DollarSign,
+  TrendingUp
+} from "lucide-react"
+import { getAllProducts } from "@/lib/product-manager"
 import { Product } from "@/lib/products"
 import { formatCurrency } from "@/lib/utils"
-import Link from "next/link"
+import { supabase } from "@/lib/supabase/client"
 
 export default function AdminDashboard() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [password, setPassword] = useState("")
   const [products, setProducts] = useState<Product[]>([])
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    image: "",
-    description: "",
-    category: "",
-    features: "",
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalCategories: 0,
+    totalValue: 0,
+    averagePrice: 0
   })
-  const [message, setMessage] = useState<{type: string, text: string} | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter()
 
-  // Load products on component mount
   useEffect(() => {
-    if (isLoggedIn) {
+    const checkAdminAccess = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+
+      // For now, we'll allow access if user is logged in
+      // In a production app, you would check if the user has admin privileges
+      if (!user) {
+        router.push("/admin/login")
+        return
+      }
+
+      setIsAdmin(true)
       loadProducts()
     }
-  }, [isLoggedIn])
 
-  const loadProducts = () => {
-    const products = getAllProducts()
-    setProducts(products)
-  }
+    checkAdminAccess()
+  }, [router])
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (authenticateAdmin(password)) {
-      setIsLoggedIn(true)
-      setMessage({type: "success", text: "Login successful!"})
-    } else {
-      setMessage({type: "error", text: "Invalid password!"})
-    }
-  }
-
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setPassword("")
-    setEditingProduct(null)
-    setFormData({
-      name: "",
-      price: "",
-      image: "",
-      description: "",
-      category: "",
-      features: "",
-    })
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
+  const loadProducts = async () => {
+    setLoading(true)
     try {
-      const productData = {
-        name: formData.name,
-        price: parseFloat(formData.price),
-        image: formData.image,
-        description: formData.description,
-        category: formData.category,
-        features: formData.features.split(",").map(f => f.trim()).filter(f => f),
-      }
+      const fetchedProducts = await getAllProducts()
+      setProducts(fetchedProducts)
 
-      if (editingProduct) {
-        // Update existing product
-        const updatedProduct = updateProduct(editingProduct.id, productData)
-        if (updatedProduct) {
-          setMessage({type: "success", text: "Product updated successfully!"})
-        } else {
-          setMessage({type: "error", text: "Failed to update product!"})
-        }
-      } else {
-        // Add new product
-        addProduct(productData)
-        setMessage({type: "success", text: "Product added successfully!"})
-      }
-      
-      // Reset form and reload products
-      setFormData({
-        name: "",
-        price: "",
-        image: "",
-        description: "",
-        category: "",
-        features: "",
+      // Calculate stats
+      const totalProducts = fetchedProducts.length
+      const categories = [...new Set(fetchedProducts.map(p => p.category))]
+      const totalValue = fetchedProducts.reduce((sum, product) => sum + product.price, 0)
+      const averagePrice = totalProducts > 0 ? totalValue / totalProducts : 0
+
+      setStats({
+        totalProducts,
+        totalCategories: categories.length,
+        totalValue,
+        averagePrice
       })
-      setEditingProduct(null)
-      loadProducts()
-      
-      // Clear message after 3 seconds
-      setTimeout(() => setMessage(null), 3000)
     } catch (error) {
-      setMessage({type: "error", text: "Error saving product: " + (error as Error).message})
-      setTimeout(() => setMessage(null), 3000)
+      console.error("Error loading products:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product)
-    setFormData({
-      name: product.name,
-      price: product.price.toString(),
-      image: product.image,
-      description: product.description,
-      category: product.category,
-      features: product.features.join(", "),
+  // Get products by category for chart
+  const getCategoryData = () => {
+    const categoryMap: Record<string, number> = {}
+    products.forEach(product => {
+      categoryMap[product.category] = (categoryMap[product.category] || 0) + 1
     })
+    return Object.entries(categoryMap).map(([name, count]) => ({ name, count }))
   }
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      const success = deleteProduct(id)
-      if (success) {
-        setMessage({type: "success", text: "Product deleted successfully!"})
-        loadProducts()
-      } else {
-        setMessage({type: "error", text: "Failed to delete product!"})
-      }
-      setTimeout(() => setMessage(null), 3000)
-    }
-  }
+  const categoryData = getCategoryData()
 
-  const handleCancelEdit = () => {
-    setEditingProduct(null)
-    setFormData({
-      name: "",
-      price: "",
-      image: "",
-      description: "",
-      category: "",
-      features: "",
-    })
-  }
-
-  if (!isLoggedIn) {
+  if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-md mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl">Admin Login</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {message && (
-                  <div className={`mb-4 p-3 rounded ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                    {message.text}
-                  </div>
-                )}
-                <form onSubmit={handleLogin}>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="password">Admin Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">Login</Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <p className="text-amber-900">Checking access...</p>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-amber-900">Loading dashboard...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="flex gap-2">
-            <Button onClick={handleLogout} variant="outline">Logout</Button>
-            <Button asChild>
-              <Link href="/">View Site</Link>
-            </Button>
-          </div>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-amber-900">Dashboard</h2>
+        <p className="text-amber-900/70">Welcome to your DC Chickin Admin Panel</p>
+      </div>
 
-        {message && (
-          <div className={`mb-6 p-3 rounded ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-            {message.text}
-          </div>
-        )}
+      {/* Stats cards */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-amber-900">Total Products</CardTitle>
+            <Package className="h-4 w-4 text-amber-700" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-900">{stats.totalProducts}</div>
+            <p className="text-xs text-amber-900/70">Active products in store</p>
+          </CardContent>
+        </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Product Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                {editingProduct ? "Edit Product" : "Add New Product"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Product Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="price">Price (₦)</Label>
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="image">Image URL</Label>
-                  <Input
-                    id="image"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleInputChange}
-                    placeholder="/path/to/image.jpg"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="category">Category</Label>
-                  <Input
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="features">Features (comma separated)</Label>
-                  <Input
-                    id="features"
-                    name="features"
-                    value={formData.features}
-                    onChange={handleInputChange}
-                    placeholder="Feature 1, Feature 2, Feature 3"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                    required
-                  />
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button type="submit">
-                    {editingProduct ? "Update Product" : "Add Product"}
-                  </Button>
-                  {editingProduct && (
-                    <Button type="button" variant="outline" onClick={handleCancelEdit}>
-                      Cancel
-                    </Button>
-                  )}
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-amber-900">Categories</CardTitle>
+            <BarChart3 className="h-4 w-4 text-amber-700" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-900">{stats.totalCategories}</div>
+            <p className="text-xs text-amber-900/70">Product categories</p>
+          </CardContent>
+        </Card>
 
-          {/* Products List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Current Products ({products.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {products.length === 0 ? (
-                <p className="text-muted-foreground">No products found.</p>
-              ) : (
-                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                  {products.map((product) => (
-                    <div key={product.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between">
-                        <h3 className="font-semibold">{product.name}</h3>
-                        <span className="font-bold text-primary">{formatCurrency(product.price)}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
-                      <p className="text-sm mt-2 line-clamp-2">{product.description}</p>
-                      <div className="flex gap-2 mt-3">
-                        <Button size="sm" onClick={() => handleEdit(product)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleDelete(product.id)}>Delete</Button>
-                      </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-amber-900">Inventory Value</CardTitle>
+            <DollarSign className="h-4 w-4 text-amber-700" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-900">{formatCurrency(stats.totalValue)}</div>
+            <p className="text-xs text-amber-900/70">Total inventory worth</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-amber-900">Avg. Price</CardTitle>
+            <TrendingUp className="h-4 w-4 text-amber-700" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-900">{formatCurrency(stats.averagePrice)}</div>
+            <p className="text-xs text-amber-900/70">Average product price</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent products and category chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent products */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-amber-900">Recent Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {products.slice(0, 5).map((product) => (
+                <div key={product.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-amber-900">{product.name}</p>
+                    <p className="text-xs text-amber-900/70">{product.category}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-amber-900">{formatCurrency(product.price)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Categories chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-amber-900">Products by Category</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {categoryData.map((category) => (
+                <div key={category.name} className="flex items-center">
+                  <div className="w-24 text-sm text-amber-900/70 truncate">{category.name}</div>
+                  <div className="flex-1 ml-2">
+                    <div className="flex items-center">
+                      <div
+                        className="h-2 bg-amber-300 rounded-full"
+                        style={{ width: `${(category.count / stats.totalProducts) * 100}%` }}
+                      ></div>
+                      <span className="ml-2 text-xs text-amber-900/70">{category.count}</span>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

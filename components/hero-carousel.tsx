@@ -8,35 +8,33 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 const heroSlides = [
   {
     id: 1,
-    title: "Premium Tech,",
-    subtitle: "Simplified Shopping",
+    title: "Elevate Your Style",
+    subtitle: "Premium Clothing Collection",
     description:
-      "Experience effortless shopping with our curated selection of premium tech products and instant WhatsApp ordering.",
+      "Discover our carefully curated selection of high-quality clothing designed for comfort and style. Each piece is crafted with attention to detail and premium materials.",
     primaryButton: {
-      text: "Explore Products",
+      text: "Shop Now",
+      href: "/shop",
+    },
+    secondaryButton: {
+      text: "View Collection",
+      href: "/shop",
+    },
+  },
+  {
+    id: 2,
+    title: "Trendy & Timeless",
+    subtitle: "Fashion That Lasts",
+    description:
+      "Our collection blends current trends with timeless designs, ensuring you look great today and for years to come. Quality pieces that stand the test of time.",
+    primaryButton: {
+      text: "Explore Styles",
       href: "/shop",
     },
     secondaryButton: {
       text: "Contact Us",
       href: "/contact",
     },
-    titleColor: "text-primary",
-  },
-  {
-    id: 2,
-    title: "Quality Products,",
-    subtitle: "Fast Delivery",
-    description:
-      "Get premium tech essentials delivered quickly with our streamlined ordering process and reliable shipping.",
-    primaryButton: {
-      text: "Shop Now",
-      href: "/shop",
-    },
-    secondaryButton: {
-      text: "Learn More",
-      href: "/contact",
-    },
-    titleColor: "text-primary",
   },
 ]
 
@@ -72,46 +70,43 @@ export function HeroCarousel() {
   const currentSlideData = heroSlides[currentSlide]
 
   return (
-    <section className="relative py-20 sm:py-24 px-4 overflow-hidden bg-gradient-to-br from-background to-muted">
-      {/* Decorative elements */}
-      <div className="absolute top-10 right-10 w-24 h-24 rounded-full bg-primary/10 blur-2xl"></div>
-      <div className="absolute bottom-10 left-10 w-32 h-32 rounded-full bg-muted-foreground/5 blur-3xl"></div>
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-
+    <section className="relative py-16 sm:py-20 px-4 bg-amber-50 overflow-hidden">
+      {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300 shadow-sm"
+        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-amber-100/80 backdrop-blur-sm border border-amber-200/50 rounded-full flex items-center justify-center hover:bg-amber-100 hover:border-amber-300 transition-all duration-300 shadow-sm"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5 text-primary" />
+        <ChevronLeft className="w-5 h-5 text-amber-900" />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-full flex items-center justify-center hover:bg-background hover:border-primary/40 transition-all duration-300 shadow-sm"
+        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-amber-100/80 backdrop-blur-sm border border-amber-200/50 rounded-full flex items-center justify-center hover:bg-amber-100 hover:border-amber-300 transition-all duration-300 shadow-sm"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-5 h-5 text-primary" />
+        <ChevronRight className="w-5 h-5 text-amber-900" />
       </button>
 
-      <div className="container mx-auto text-center relative z-10">
-        <div className="max-w-3xl mx-auto">
-          <div key={currentSlide} className="animate-in fade-in duration-700">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              <span className={`${currentSlideData.titleColor} block mb-2`}>
-                {currentSlideData.title}
-              </span>
-              <span className="text-foreground">{currentSlideData.subtitle}</span>
+      <div className="container mx-auto">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Text Content */}
+          <div className="order-2 lg:order-1 text-center lg:text-left animate-in fade-in duration-700">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-amber-900">
+              {currentSlideData.title}
             </h1>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-5 text-amber-700">
+              {currentSlideData.subtitle}
+            </h2>
 
-            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-amber-900/80 mb-8 max-w-2xl leading-relaxed">
               {currentSlideData.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
                 size="lg"
-                className="text-base px-8 py-3 h-auto rounded-full font-medium shadow-sm hover:shadow-md transition-shadow"
+                className="text-base px-8 py-3 h-auto rounded-full font-medium shadow-sm hover:shadow-md transition-shadow bg-amber-700 hover:bg-amber-800 text-white"
                 asChild
               >
                 <Link href={currentSlideData.primaryButton.href}>{currentSlideData.primaryButton.text}</Link>
@@ -120,7 +115,7 @@ export function HeroCarousel() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8 py-3 h-auto rounded-full font-medium border-2"
+                className="text-base px-8 py-3 h-auto rounded-full font-medium border-2 border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100"
                 asChild
               >
                 <Link href={currentSlideData.secondaryButton.href}>
@@ -130,20 +125,39 @@ export function HeroCarousel() {
             </div>
           </div>
 
-          <div className="mt-16 flex items-center justify-center gap-3">
-            {heroSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? "bg-primary w-8 rounded-full" 
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+          {/* Visual Element */}
+          <div className="order-1 lg:order-2 flex justify-center">
+            <div className="relative w-full max-w-md">
+              <div className="aspect-square rounded-2xl bg-amber-200/30 border-2 border-amber-300/30 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-amber-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl font-bold text-amber-900">DC</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-amber-900">Chickin</h3>
+                  <p className="text-amber-900/70 mt-2">Clothing Co.</p>
+                </div>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-amber-200/20 blur-xl"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 rounded-full bg-amber-300/10 blur-xl"></div>
+            </div>
           </div>
+        </div>
+
+        {/* Slide Indicators */}
+        <div className="mt-12 flex items-center justify-center gap-3">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                  ? "bg-amber-700 w-8 rounded-full"
+                  : "bg-amber-300 hover:bg-amber-400"
+                }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

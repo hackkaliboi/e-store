@@ -1,0 +1,10 @@
+<svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rectangle (box) with rounded corners -->
+  <rect x="8" y="10" width="34" height="30" rx="5" fill="#d4a373" />
+  
+  <!-- DC initials in bold, centered in the box -->
+  <text x="25" y="29" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">DC</text>
+  
+  <!-- Brand name with proper spacing -->
+  <text x="48" y="29" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#4a3c30" dominant-baseline="middle">Chickin</text>
+</svg>

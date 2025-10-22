@@ -10,8 +10,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow h-full">
-      <div className="aspect-square overflow-hidden">
+    <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow h-full bg-white">
+      <div className="aspect-square overflow-hidden rounded-t-lg">
         <img
           src={product.image || "/placeholder.svg"}
           alt={product.name}
@@ -19,10 +19,10 @@ export function ProductCard({ product }: ProductCardProps) {
         />
       </div>
       <CardContent className="p-4">
-        <h3 className="font-medium text-sm mb-1">{product.name}</h3>
+        <h3 className="font-medium text-sm mb-1 text-amber-900">{product.name}</h3>
         <div className="flex items-center justify-between">
-          <span className="text-base font-semibold text-primary">{formatCurrency(product.price)}</span>
-          <Button size="sm" variant="outline" className="text-xs h-7 px-2" asChild>
+          <span className="text-base font-semibold text-amber-700">{formatCurrency(product.price)}</span>
+          <Button size="sm" variant="outline" className="text-xs h-7 px-2 border-amber-300 text-amber-900 hover:bg-amber-100" asChild>
             <Link href={`/product/${product.id}`}>View</Link>
           </Button>
         </div>

@@ -33,16 +33,27 @@ export default function SettingsPage() {
 
     useEffect(() => {
         const checkAdminAccess = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-
-            // For now, we'll allow access if user is logged in
-            // In a production app, you would check if the user has admin privileges
-            if (!user) {
-                router.push("/admin/login")
+            // Check if Supabase client is initialized
+            if (!supabase) {
+                console.error('Supabase client not initialized')
+                // In a real app, you might want to redirect to an error page
                 return
             }
 
-            setIsAdmin(true)
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+
+                // For now, we'll allow access if user is logged in
+                // In a production app, you would check if the user has admin privileges
+                if (!user) {
+                    router.push("/admin/login")
+                    return
+                }
+
+                setIsAdmin(true)
+            } catch (error) {
+                console.error("Error checking admin access:", error)
+            }
         }
 
         checkAdminAccess()
@@ -207,8 +218,8 @@ export default function SettingsPage() {
                             </div>
 
                             <div className="flex justify-end">
-                                <Button
-                                    type="button"
+                                <Button 
+                                    type="button" 
                                     onClick={handleSave}
                                     className="bg-amber-700 hover:bg-amber-800 text-white"
                                 >

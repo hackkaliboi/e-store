@@ -38,17 +38,30 @@ export default function ProductsPage() {
 
     useEffect(() => {
         const checkAdminAccess = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-
-            // For now, we'll allow access if user is logged in
-            // In a production app, you would check if the user has admin privileges
-            if (!user) {
-                router.push("/admin/login")
+            // Check if Supabase client is initialized
+            if (!supabase) {
+                console.error('Supabase client not initialized')
+                // In a real app, you might want to redirect to an error page
+                setLoading(false)
                 return
             }
 
-            setIsAdmin(true)
-            loadProducts()
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+
+                // For now, we'll allow access if user is logged in
+                // In a production app, you would check if the user has admin privileges
+                if (!user) {
+                    router.push("/admin/login")
+                    return
+                }
+
+                setIsAdmin(true)
+                loadProducts()
+            } catch (error) {
+                console.error("Error checking admin access:", error)
+                setLoading(false)
+            }
         }
 
         checkAdminAccess()
@@ -352,9 +365,9 @@ export default function ProductsPage() {
                                                 <Edit3 className="w-4 h-4 mr-1" />
                                                 Edit
                                             </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
+                                            <Button 
+                                                size="sm" 
+                                                variant="destructive" 
                                                 onClick={() => handleDelete(product.id)}
                                                 className="bg-red-600 hover:bg-red-700"
                                             >

@@ -26,11 +26,28 @@ export default function AdminLayout({
   const router = useRouter()
 
   useEffect(() => {
+    // Check if Supabase client is initialized
+    if (!supabase) {
+      console.error('Supabase client not initialized')
+      setLoading(false)
+      return
+    }
+
     // Check if user is logged in
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      setLoading(false)
+      if (!supabase) {
+        setLoading(false)
+        return
+      }
+      
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch (error) {
+        console.error("Error checking user:", error)
+      } finally {
+        setLoading(false)
+      }
 
       // If no user and not on login page, redirect to login
       if (!user && window.location.pathname !== "/admin/login") {
@@ -49,12 +66,16 @@ export default function AdminLayout({
     })
 
     return () => {
-      subscription.unsubscribe()
+      if (subscription) {
+        subscription.unsubscribe()
+      }
     }
   }, [router])
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     router.push("/admin/login")
     router.refresh()
   }

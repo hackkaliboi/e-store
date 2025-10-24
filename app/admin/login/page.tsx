@@ -16,11 +16,25 @@ export default function AdminLogin() {
     const router = useRouter()
 
     useEffect(() => {
+        // Check if Supabase client is initialized
+        if (!supabase) {
+            console.error('Supabase client not initialized')
+            return
+        }
+
         // Check if user is already logged in
         const checkUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
-                router.push("/admin")
+            if (!supabase) {
+                return
+            }
+            
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    router.push("/admin")
+                }
+            } catch (error) {
+                console.error("Error checking user:", error)
             }
         }
 
@@ -31,6 +45,13 @@ export default function AdminLogin() {
         e.preventDefault()
         setLoading(true)
         setError(null)
+
+        // Check if Supabase client is initialized
+        if (!supabase) {
+            setError("Authentication service not available. Please try again later.")
+            setLoading(false)
+            return
+        }
 
         try {
             const { error } = await supabase.auth.signInWithPassword({

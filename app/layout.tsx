@@ -6,14 +6,14 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'DC Chickin | Premium Clothing Store',
-    template: '%s | DC Chickin'
+    default: 'De-chickins | Premium Clothing Store',
+    template: '%s | De-chickins'
   },
-  description: 'Discover premium quality clothing at DC Chickin. Shop our curated collection of stylish apparel for men and women.',
-  keywords: ['clothing store', 'fashion', 'premium clothing', 'apparel', 'style', 'DC Chickin'],
-  authors: [{ name: 'DC Chickin' }],
-  creator: 'DC Chickin',
-  publisher: 'DC Chickin',
+  description: 'Discover premium quality clothing at De-chickins. Shop our curated collection of stylish apparel for men and women.',
+  keywords: ['clothing store', 'fashion', 'premium clothing', 'apparel', 'style', 'De-chickins'],
+  authors: [{ name: 'De-chickins' }],
+  creator: 'De-chickins',
+  publisher: 'De-chickins',
   robots: {
     index: true,
     follow: true,
@@ -26,30 +26,30 @@ export const metadata: Metadata = {
     }
   },
   alternates: {
-    canonical: 'https://www.dcchickin.com'
+    canonical: 'https://www.de-chickins.com'
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.dcchickin.com',
-    title: 'DC Chickin | Premium Clothing Store',
-    description: 'Discover premium quality clothing at DC Chickin. Shop our curated collection of stylish apparel for men and women.',
-    siteName: 'DC Chickin',
+    url: 'https://www.de-chickins.com',
+    title: 'De-chickins | Premium Clothing Store',
+    description: 'Discover premium quality clothing at De-chickins. Shop our curated collection of stylish apparel for men and women.',
+    siteName: 'De-chickins',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'DC Chickin - Premium Clothing Store'
+        alt: 'De-chickins - Premium Clothing Store'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DC Chickin | Premium Clothing Store',
-    description: 'Discover premium quality clothing at DC Chickin. Shop our curated collection of stylish apparel for men and women.',
+    title: 'De-chickins | Premium Clothing Store',
+    description: 'Discover premium quality clothing at De-chickins. Shop our curated collection of stylish apparel for men and women.',
     images: ['/twitter-image.jpg'],
-    creator: '@dcchickin'
+    creator: '@de-chickins'
   },
   verification: {
     google: ''

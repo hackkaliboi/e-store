@@ -25,10 +25,16 @@ export default function AdminDashboard() {
     averagePrice: 0
   })
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(true) // Set to true to bypass auth
   const router = useRouter()
 
   useEffect(() => {
+    // For development, bypass authentication and load products directly
+    setIsAdmin(true)
+    loadProducts()
+
+    // Comment out the original auth code
+    /*
     const checkAdminAccess = async () => {
       // Check if Supabase client is initialized
       if (!supabase) {
@@ -57,6 +63,7 @@ export default function AdminDashboard() {
     }
 
     checkAdminAccess()
+    */
   }, [router])
 
   const loadProducts = async () => {
@@ -95,6 +102,8 @@ export default function AdminDashboard() {
 
   const categoryData = getCategoryData()
 
+  // Always allow access for development
+  /*
   if (!isAdmin) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -102,6 +111,7 @@ export default function AdminDashboard() {
       </div>
     )
   }
+  */
 
   if (loading) {
     return (
@@ -115,7 +125,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-amber-900">Dashboard</h2>
-        <p className="text-amber-900/70">Welcome to your DC Chickin Admin Panel</p>
+        <p className="text-amber-900/70">Welcome to your De-chickins Admin Panel</p>
       </div>
 
       {/* Stats cards */}

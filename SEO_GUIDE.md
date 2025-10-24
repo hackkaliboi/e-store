@@ -1,7 +1,9 @@
-# SEO Implementation Guide for DC Chickin
+# SEO Implementation Guide for De-chickins
+
+This document explains the SEO improvements implemented for the De-chickins e-commerce website. These enhancements will help improve search engine rankings and visibility.
 
 ## Overview
-This document explains the SEO improvements implemented for the DC Chickin e-commerce website. These enhancements will help improve search engine rankings and visibility.
+This document explains the SEO improvements implemented for the De-chickins e-commerce website. These enhancements will help improve search engine rankings and visibility.
 
 ## Implemented SEO Features
 
@@ -17,21 +19,21 @@ This document explains the SEO improvements implemented for the DC Chickin e-com
 ### 2. Page-Specific Metadata
 
 #### Home Page
-- Title: "Home | DC Chickin"
-- Description: "Welcome to DC Chickin - Your destination for premium quality clothing."
+- Title: "Home | De-chickins"
+- Description: "Welcome to De-chickins - Your destination for premium quality clothing."
 
 #### Shop Page
-- Title: "Shop All Products | DC Chickin"
+- Title: "Shop All Products | De-chickins"
 - Description: "Browse our complete collection of premium clothing."
 
 #### Product Pages (Dynamic)
-- Title: "{Product Name} | DC Chickin"
+- Title: "{Product Name} | De-chickins"
 - Description: First 160 characters of product description
 - Dynamic Open Graph images based on product images
 
 #### Contact Page
-- Title: "Contact Us | DC Chickin"
-- Description: "Get in touch with DC Chickin for orders, support, or any questions."
+- Title: "Contact Us | De-chickins"
+- Description: "Get in touch with De-chickins for orders, support, or any questions."
 
 ### 3. Sitemap & Robots.txt
 - **sitemap.xml**: Includes all main pages with appropriate update frequencies

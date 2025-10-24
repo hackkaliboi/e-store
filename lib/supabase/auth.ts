@@ -6,7 +6,7 @@ export const signUp = async (email: string, password: string) => {
     if (!supabase) {
         return { data: null, error: new Error('Supabase client not initialized') }
     }
-    
+
     try {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -29,7 +29,7 @@ export const signIn = async (email: string, password: string) => {
     if (!supabase) {
         return { data: null, error: new Error('Supabase client not initialized') }
     }
-    
+
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -52,7 +52,7 @@ export const signOut = async () => {
     if (!supabase) {
         return { error: new Error('Supabase client not initialized') }
     }
-    
+
     try {
         const { error } = await supabase.auth.signOut()
 
@@ -72,7 +72,7 @@ export const getCurrentUser = async () => {
     if (!supabase) {
         return { data: null, error: new Error('Supabase client not initialized') }
     }
-    
+
     try {
         const { data, error } = await supabase.auth.getUser()
 

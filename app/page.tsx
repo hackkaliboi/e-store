@@ -10,19 +10,19 @@ import { formatCurrency } from "@/lib/utils"
 import { Product } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: 'Home | DC Chickin',
-  description: 'Welcome to DC Chickin - Your destination for premium quality clothing. Discover our curated collection of stylish apparel for men and women.',
+  title: 'Home | De-chickins',
+  description: 'Welcome to De-chickins - Your destination for premium quality clothing. Discover our curated collection of stylish apparel for men and women.',
   openGraph: {
-    title: 'DC Chickin - Premium Clothing Store',
+    title: 'De-chickins - Premium Clothing Store',
     description: 'Shop our curated collection of stylish apparel for men and women. Premium quality clothing at affordable prices.',
-    url: 'https://www.dcchickin.com',
-    siteName: 'DC Chickin',
+    url: 'https://www.de-chickins.com',
+    siteName: 'De-chickins',
     images: [
       {
         url: '/og-home.jpg',
         width: 1200,
         height: 630,
-        alt: 'DC Chickin - Premium Clothing Collection'
+        alt: 'De-chickins - Premium Clothing Collection'
       }
     ],
     locale: 'en_US',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DC Chickin - Premium Clothing Store',
+    title: 'De-chickins - Premium Clothing Store',
     description: 'Shop our curated collection of stylish apparel for men and women. Premium quality clothing at affordable prices.',
     images: ['/twitter-home.jpg'],
   },
@@ -173,7 +173,7 @@ export default async function HomePage() {
         <div className="container mx-auto text-center max-w-2xl">
           <h2 className="text-2xl font-semibold mb-3 text-amber-900">Ready to Shop?</h2>
           <p className="text-amber-900/70 text-sm mb-6">
-            Experience the finest quality clothing from DC Chickin.
+            Experience the finest quality clothing from De-chickins.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button className="text-sm px-6 py-2 h-auto rounded-full bg-amber-700 hover:bg-amber-800 text-white" asChild>
@@ -189,7 +189,7 @@ export default async function HomePage() {
       {/* Simplified Footer */}
       <footer className="border-t border-amber-200/30 py-8 px-4 bg-amber-50">
         <div className="container mx-auto text-center">
-          <p className="text-xs text-amber-900/70">© 2024 DC Chickin. All rights reserved.</p>
+          <p className="text-xs text-amber-900/70">© 2024 De-chickins. All rights reserved.</p>
         </div>
       </footer>
     </div>

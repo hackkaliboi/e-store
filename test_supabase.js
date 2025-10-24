@@ -2,8 +2,8 @@
 const { createClient } = require('@supabase/supabase-js')
 
 // These should match your .env.local file
-const supabaseUrl = 'https://njovhfjtdjhwvkybvpqo.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qb3ZoZmp0ZGpod3ZreWJ2cHFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExMjc1NzYsImV4cCI6MjA3NjcwMzU3Nn0.nbECDmz-DkRsRNUwAE3qRlrZTKeJpjZPauljVtMByRU'
+const supabaseUrl = 'https://tpxexyirxbngrahrfcmn.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRweGV4eWlyeGJuZ3JhaHJmY21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMTY0ODEsImV4cCI6MjA3Njg5MjQ4MX0.ec_OpibImkwVQTjz7C3SbcxPD-_wpXyS-TMZOK6OoQU'
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

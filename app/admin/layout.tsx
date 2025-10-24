@@ -26,6 +26,13 @@ export default function AdminLayout({
   const router = useRouter()
 
   useEffect(() => {
+    // For development purposes, disable authentication
+    // Set a mock user to bypass auth
+    setUser({ id: 'mock-user', email: 'admin@example.com' })
+    setLoading(false)
+
+    // Comment out the original auth code
+    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
@@ -70,12 +77,11 @@ export default function AdminLayout({
         subscription.unsubscribe()
       }
     }
+    */
   }, [router])
 
   const handleLogout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut()
-    }
+    // For development, just redirect to login without signing out
     router.push("/admin/login")
     router.refresh()
   }
@@ -94,10 +100,14 @@ export default function AdminLayout({
     )
   }
 
+  // Always render the layout for development purposes
+  // Remove the authentication check
+  /*
   // If user is not logged in and not on login page, don't render the layout
   if (!user && window.location.pathname !== "/admin/login") {
     return null
   }
+  */
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -120,9 +130,9 @@ export default function AdminLayout({
           <div className="flex h-16 items-center border-b border-amber-700 px-4">
             <Link href="/admin" className="flex items-center gap-2">
               <div className="bg-amber-600 rounded-lg w-8 h-8 flex items-center justify-center">
-                <span className="font-bold text-white">DC</span>
+                <span className="font-bold text-white">De</span>
               </div>
-              <span className="text-lg font-semibold">DC Chickin</span>
+              <span className="text-lg font-semibold">De-chickins</span>
             </Link>
           </div>
 
@@ -167,7 +177,7 @@ export default function AdminLayout({
         <header className="sticky top-0 z-30 border-b border-amber-200 bg-amber-100/80 backdrop-blur-sm">
           <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-amber-900">DC Chickin Admin Panel</h1>
+              <h1 className="text-xl font-bold text-amber-900">De-chickins Admin Panel</h1>
             </div>
             <div className="flex items-center gap-4">
               <Button

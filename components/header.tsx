@@ -15,7 +15,12 @@ export function Header() {
       <div className="container mx-auto px-4 py-3">
         <nav className="flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <img src="/logo.svg" alt="DC Chickin Logo" className="h-10 w-auto" />
+            <div className="flex items-center">
+              <div className="bg-amber-600 rounded-lg w-10 h-10 flex items-center justify-center mr-3">
+                <span className="font-bold text-white text-lg">De</span>
+              </div>
+              <span className="text-xl font-bold text-amber-900">De-chickins</span>
+            </div>
           </Link>
 
           {/* Mobile menu button */}

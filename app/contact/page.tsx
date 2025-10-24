@@ -8,19 +8,19 @@ import { Label } from "@/components/ui/label"
 import { MessageCircle, Phone, Mail, Clock } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: 'Contact Us | DC Chickin',
-  description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email. Business hours: Mon-Fri 9AM-6PM.',
+  title: 'Contact Us | De-chickins',
+  description: 'Get in touch with De-chickins for orders, support, or any questions. Reach us via WhatsApp, phone, or email. Business hours: Mon-Fri 9AM-6PM.',
   openGraph: {
-    title: 'Contact DC Chickin - Premium Clothing Store',
-    description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
-    url: 'https://www.dcchickin.com/contact',
-    siteName: 'DC Chickin',
+    title: 'Contact De-chickins - Premium Clothing Store',
+    description: 'Get in touch with De-chickins for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
+    url: 'https://www.de-chickins.com/contact',
+    siteName: 'De-chickins',
     images: [
       {
         url: '/og-contact.jpg',
         width: 1200,
         height: 630,
-        alt: 'Contact DC Chickin - Premium Clothing Store'
+        alt: 'Contact De-chickins - Premium Clothing Store'
       }
     ],
     locale: 'en_US',
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact DC Chickin - Premium Clothing Store',
-    description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
+    title: 'Contact De-chickins - Premium Clothing Store',
+    description: 'Get in touch with De-chickins for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
     images: ['/twitter-contact.jpg'],
   },
 }
@@ -129,7 +129,7 @@ export default function ContactPage() {
                 <Mail className="w-6 h-6 text-amber-800" />
               </div>
               <h3 className="font-semibold mb-2 text-amber-900">Email</h3>
-              <p className="text-amber-900/70 text-sm sm:text-base">hello@dcchickin.com</p>
+              <p className="text-amber-900/70 text-sm sm:text-base">hello@de-chickins.com</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-amber-200 rounded-lg flex items-center justify-center mx-auto mb-4">

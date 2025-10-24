@@ -5,19 +5,19 @@ import { getAllProducts } from "@/lib/product-manager"
 import { Product } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: 'Shop All Products | DC Chickin',
+  title: 'Shop All Products | De-chickins',
   description: 'Browse our complete collection of premium clothing. Find the perfect style for you from our wide range of apparel for men and women.',
   openGraph: {
-    title: 'Shop All Products - DC Chickin',
+    title: 'Shop All Products - De-chickins',
     description: 'Discover our full collection of premium clothing. Shop stylish apparel for men and women with fast delivery and quality assurance.',
-    url: 'https://www.dcchickin.com/shop',
-    siteName: 'DC Chickin',
+    url: 'https://www.de-chickins.com/shop',
+    siteName: 'De-chickins',
     images: [
       {
         url: '/og-shop.jpg',
         width: 1200,
         height: 630,
-        alt: 'DC Chickin - All Products Collection'
+        alt: 'De-chickins - All Products Collection'
       }
     ],
     locale: 'en_US',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop All Products - DC Chickin',
+    title: 'Shop All Products - De-chickins',
     description: 'Discover our full collection of premium clothing. Shop stylish apparel for men and women with fast delivery and quality assurance.',
     images: ['/twitter-shop.jpg'],
   },

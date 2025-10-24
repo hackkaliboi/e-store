@@ -19,25 +19,25 @@ interface ProductPageProps {
 // Generate metadata for the product page
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product: Product | null = await getProductById(params.id)
-  
+
   if (!product) {
     return {
-      title: 'Product Not Found | DC Chickin',
+      title: 'Product Not Found | De-chickins',
       description: 'The product you are looking for could not be found.'
     }
   }
 
-  const title = `${product.name} | DC Chickin`
+  const title = `${product.name} | De-chickins`
   const description = product.description.substring(0, 160) + (product.description.length > 160 ? '...' : '')
-  
+
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      url: `https://www.dcchickin.com/product/${params.id}`,
-      siteName: 'DC Chickin',
+      url: `https://www.de-chickins.com/product/${params.id}`,
+      siteName: 'De-chickins',
       images: [
         {
           url: product.image || '/placeholder.svg',
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         }
       ],
       locale: 'en_US',
-      type: 'website', // Changed from 'product' to 'website' to match the allowed types
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',

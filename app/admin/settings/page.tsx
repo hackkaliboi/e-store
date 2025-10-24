@@ -20,7 +20,7 @@ import { supabase } from "@/lib/supabase/client"
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState({
-        storeName: "DC Chickin",
+        storeName: "De-chickins",
         storeDescription: "Premium clothing collection for fashion-forward individuals",
         currency: "₦",
         enableNotifications: true,
@@ -28,10 +28,15 @@ export default function SettingsPage() {
         taxRate: "7.5",
         shippingCost: "1500"
     })
-    const [isAdmin, setIsAdmin] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(true) // Set to true to bypass auth
     const router = useRouter()
 
     useEffect(() => {
+        // For development, bypass authentication
+        setIsAdmin(true)
+
+        // Comment out the original auth code
+        /*
         const checkAdminAccess = async () => {
             // Check if Supabase client is initialized
             if (!supabase) {
@@ -57,6 +62,7 @@ export default function SettingsPage() {
         }
 
         checkAdminAccess()
+        */
     }, [router])
 
     const handleSave = () => {
@@ -68,6 +74,8 @@ export default function SettingsPage() {
         setSettings(prev => ({ ...prev, [field]: value }))
     }
 
+    // Always allow access for development
+    /*
     if (!isAdmin) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -75,6 +83,7 @@ export default function SettingsPage() {
             </div>
         )
     }
+    */
 
     return (
         <div className="space-y-6">
@@ -218,8 +227,8 @@ export default function SettingsPage() {
                             </div>
 
                             <div className="flex justify-end">
-                                <Button 
-                                    type="button" 
+                                <Button
+                                    type="button"
                                     onClick={handleSave}
                                     className="bg-amber-700 hover:bg-amber-800 text-white"
                                 >

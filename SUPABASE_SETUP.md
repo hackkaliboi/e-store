@@ -14,11 +14,29 @@ This project uses Supabase as the backend for product management. Follow these s
 Create a `.env.local` file in the root of your project with the following variables:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_URL=https://tpxexyirxbngrahrfcmn.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRweGV4eWlyeGJuZ3JhaHJmY21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMTY0ODEsImV4cCI6MjA3Njg5MjQ4MX0.ec_OpibImkwVQTjz7C3SbcxPD-_wpXyS-TMZOK6OoQU
 ```
 
-## 3. Create the Products Table
+## 3. Automatic Setup (Recommended)
+
+For the fastest setup, you can use the complete setup script that automatically creates all necessary tables, storage buckets, and policies:
+
+1. In the Supabase dashboard, go to "SQL Editor" in the left sidebar
+2. Copy and paste the contents of `supabase_complete_setup.sql` into the editor
+3. Click "Run" to execute the script
+
+This will automatically set up:
+- Products table with sample data
+- Admin users table
+- Storage bucket for product images
+- All necessary policies and permissions
+
+## 4. Manual Setup
+
+If you prefer to set things up manually, follow these steps:
+
+### Create the Products Table
 
 In your Supabase SQL editor, run the following SQL command to create the products table:
 
@@ -35,7 +53,19 @@ create table products (
 );
 ```
 
-## 4. Set up Row Level Security (Optional)
+### Set up Storage for Product Images
+
+1. Go to "Storage" in the left sidebar
+2. Click "Create Bucket"
+3. Name the bucket "products"
+4. Set the bucket to "Public"
+5. Create policies for the bucket:
+   - SELECT: Allow all users to read images
+   - INSERT: Allow authenticated users to upload images
+   - UPDATE: Allow authenticated users to update images
+   - DELETE: Allow authenticated users to delete images
+
+### Set up Row Level Security (Optional)
 
 For development, you might want to disable RLS:
 

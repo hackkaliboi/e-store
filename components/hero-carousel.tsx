@@ -131,9 +131,9 @@ export function HeroCarousel() {
               <div className="aspect-square rounded-2xl bg-amber-200/30 border-2 border-amber-300/30 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-24 h-24 bg-amber-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl font-bold text-amber-900">DC</span>
+                    <span className="text-3xl font-bold text-amber-900">De</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-amber-900">Chickin</h3>
+                  <h3 className="text-2xl font-bold text-amber-900">De-chickins</h3>
                   <p className="text-amber-900/70 mt-2">Clothing Co.</p>
                 </div>
               </div>
@@ -152,8 +152,8 @@ export function HeroCarousel() {
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
-                  ? "bg-amber-700 w-8 rounded-full"
-                  : "bg-amber-300 hover:bg-amber-400"
+                ? "bg-amber-700 w-8 rounded-full"
+                : "bg-amber-300 hover:bg-amber-400"
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />

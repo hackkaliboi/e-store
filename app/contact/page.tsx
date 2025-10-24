@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -5,6 +6,33 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { MessageCircle, Phone, Mail, Clock } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: 'Contact Us | DC Chickin',
+  description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email. Business hours: Mon-Fri 9AM-6PM.',
+  openGraph: {
+    title: 'Contact DC Chickin - Premium Clothing Store',
+    description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
+    url: 'https://www.dcchickin.com/contact',
+    siteName: 'DC Chickin',
+    images: [
+      {
+        url: '/og-contact.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Contact DC Chickin - Premium Clothing Store'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact DC Chickin - Premium Clothing Store',
+    description: 'Get in touch with DC Chickin for orders, support, or any questions. Reach us via WhatsApp, phone, or email.',
+    images: ['/twitter-contact.jpg'],
+  },
+}
 
 export default function ContactPage() {
   return (

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Header } from "@/components/header"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { Button } from "@/components/ui/button"
@@ -7,6 +8,33 @@ import Image from "next/image"
 import { getAllProducts } from "@/lib/product-manager"
 import { formatCurrency } from "@/lib/utils"
 import { Product } from "@/lib/products"
+
+export const metadata: Metadata = {
+  title: 'Home | DC Chickin',
+  description: 'Welcome to DC Chickin - Your destination for premium quality clothing. Discover our curated collection of stylish apparel for men and women.',
+  openGraph: {
+    title: 'DC Chickin - Premium Clothing Store',
+    description: 'Shop our curated collection of stylish apparel for men and women. Premium quality clothing at affordable prices.',
+    url: 'https://www.dcchickin.com',
+    siteName: 'DC Chickin',
+    images: [
+      {
+        url: '/og-home.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'DC Chickin - Premium Clothing Collection'
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DC Chickin - Premium Clothing Store',
+    description: 'Shop our curated collection of stylish apparel for men and women. Premium quality clothing at affordable prices.',
+    images: ['/twitter-home.jpg'],
+  },
+}
 
 export default async function HomePage() {
   // Show fewer products for a cleaner look

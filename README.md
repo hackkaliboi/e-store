@@ -15,6 +15,7 @@ A fully responsive e-commerce website built with Next.js 14, TypeScript, and Tai
 - **Responsive Design** - Works on all device sizes
 - **Dark Mode** - Theme switching capability
 - **Performance Optimized** - Built with Next.js for optimal performance
+- **Admin Panel** - Manage products and store settings
 
 ## 🛠️ Tech Stack
 
@@ -23,11 +24,13 @@ A fully responsive e-commerce website built with Next.js 14, TypeScript, and Tai
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
 - **[Shadcn UI](https://ui.shadcn.com/)** - Reusable component library
 - **[Lucide React](https://lucide.dev/)** - Icon library
+- **[Supabase](https://supabase.com/)** - Backend-as-a-Service
 
 ## 📁 Project Structure
 
 ```
 app/                  # Next.js app router pages
+  ├── admin/          # Admin panel pages
   ├── contact/        # Contact page
   ├── product/[id]/   # Dynamic product detail pages
   ├── shop/           # Shop/product listing page
@@ -68,6 +71,13 @@ styles/               # Global styles
    ```
 
 4. Open your browser to [http://localhost:3000](http://localhost:3000)
+
+### Supabase Setup
+
+This project uses Supabase for backend services. For complete setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
+
+The following SQL setup file is available:
+- `supabase_setup.sql` - Complete setup for a fresh Supabase project including tables and storage
 
 ### Building for Production
 

@@ -1,3 +1,5 @@
+// This file exports all the UI components for easy importing
+
 export * from './badge'
 export * from './button'
 export * from './card'

@@ -11,7 +11,9 @@ import {
   LogOut,
   Home,
   Menu,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
 
@@ -20,19 +22,13 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    // For development purposes, disable authentication
-    // Set a mock user to bypass auth
-    setUser({ id: 'mock-user', email: 'admin@example.com' })
-    setLoading(false)
-
-    // Comment out the original auth code
-    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
@@ -40,50 +36,67 @@ export default function AdminLayout({
       return
     }
 
-    // Check if user is logged in
-    const checkUser = async () => {
-      if (!supabase) {
-        setLoading(false)
-        return
-      }
-      
+    // Create a function that uses the non-null supabase client
+    const initializeAuth = async (client: NonNullable<typeof supabase>) => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
+        const { data: { user }, error } = await client.auth.getUser()
+        if (error) {
+          console.error("Error getting user:", error)
+        }
         setUser(user)
+        
+        // If no user and not on login page, redirect to login
+        if (!user && window.location.pathname !== "/admin/login") {
+          router.push("/admin/login")
+        }
       } catch (error) {
         console.error("Error checking user:", error)
       } finally {
         setLoading(false)
       }
-
-      // If no user and not on login page, redirect to login
-      if (!user && window.location.pathname !== "/admin/login") {
-        router.push("/admin/login")
-      }
     }
-
-    checkUser()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
-      if (!session?.user && window.location.pathname !== "/admin/login") {
-        router.push("/admin/login")
-      }
-    })
+    const setupAuthListener = (client: NonNullable<typeof supabase>) => {
+      const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user || null)
+        if (!session?.user && window.location.pathname !== "/admin/login") {
+          router.push("/admin/login")
+        }
+      })
 
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe()
+      return () => {
+        subscription?.unsubscribe()
       }
     }
-    */
+
+    initializeAuth(supabase)
+    const unsubscribe = setupAuthListener(supabase)
+
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe()
+      }
+    }
   }, [router])
 
   const handleLogout = async () => {
-    // For development, just redirect to login without signing out
-    router.push("/admin/login")
-    router.refresh()
+    // Check if Supabase client is initialized
+    if (!supabase) {
+      console.error('Supabase client not initialized')
+      return
+    }
+    
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error("Error signing out:", error)
+      }
+      router.push("/admin/login")
+      router.refresh()
+    } catch (error) {
+      console.error("Error during logout:", error)
+    }
   }
 
   const navigation = [
@@ -100,14 +113,10 @@ export default function AdminLayout({
     )
   }
 
-  // Always render the layout for development purposes
-  // Remove the authentication check
-  /*
   // If user is not logged in and not on login page, don't render the layout
   if (!user && window.location.pathname !== "/admin/login") {
     return null
   }
-  */
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -124,16 +133,35 @@ export default function AdminLayout({
       </div>
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-amber-800 text-amber-50 transition-transform duration-300 ease-in-out transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+      <div className={`fixed inset-y-0 left-0 z-40 bg-amber-800 text-amber-50 transition-all duration-300 ease-in-out ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } md:translate-x-0 ${sidebarCollapsed ? 'w-20' : 'w-64'}`}>
         <div className="flex h-full flex-col">
           {/* Sidebar header */}
           <div className="flex h-16 items-center border-b border-amber-700 px-4">
-            <Link href="/admin" className="flex items-center gap-2">
-              <div className="bg-amber-600 rounded-lg w-8 h-8 flex items-center justify-center">
-                <span className="font-bold text-white">De</span>
-              </div>
-              <span className="text-lg font-semibold">De-chickins</span>
-            </Link>
+            {sidebarCollapsed ? (
+              <Link href="/admin" className="flex items-center justify-center w-full">
+                <div className="bg-amber-600 rounded-lg w-8 h-8 flex items-center justify-center">
+                  <span className="font-bold text-white">De</span>
+                </div>
+              </Link>
+            ) : (
+              <Link href="/admin" className="flex items-center gap-2">
+                <div className="bg-amber-600 rounded-lg w-8 h-8 flex items-center justify-center">
+                  <span className="font-bold text-white">De</span>
+                </div>
+                <span className="text-lg font-semibold">De-chickins</span>
+              </Link>
+            )}
+            {/* Collapse/Expand button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="ml-auto text-amber-200 hover:text-white hover:bg-amber-700"
+            >
+              {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            </Button>
           </div>
 
           {/* Navigation */}
@@ -144,11 +172,13 @@ export default function AdminLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors"
+                  className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors ${
+                    sidebarCollapsed ? 'justify-center' : ''
+                  }`}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  <Icon className="mr-3 h-5 w-5" />
-                  {item.name}
+                  <Icon className="h-5 w-5" />
+                  {!sidebarCollapsed && <span className="ml-3">{item.name}</span>}
                 </Link>
               )
             })}
@@ -158,26 +188,32 @@ export default function AdminLayout({
           <div className="border-t border-amber-700 p-4">
             <button
               onClick={handleLogout}
-              className="flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors w-full text-left"
+              className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors w-full text-left ${
+                sidebarCollapsed ? 'justify-center' : ''
+              }`}
             >
-              <LogOut className="mr-3 h-5 w-5" />
-              Logout
+              <LogOut className="h-5 w-5" />
+              {!sidebarCollapsed && <span className="ml-3">Logout</span>}
             </button>
-            <Link href="/" className="flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors mt-2">
-              <Home className="mr-3 h-5 w-5" />
-              Back to Site
+            <Link href="/" className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors mt-2 ${
+                sidebarCollapsed ? 'justify-center' : ''
+              }`}>
+              <Home className="h-5 w-5" />
+              {!sidebarCollapsed && <span className="ml-3">Back to Site</span>}
             </Link>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="md:pl-64 flex flex-col flex-1">
+      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
+        sidebarCollapsed ? 'md:pl-20' : 'md:pl-64'
+      } ${sidebarOpen ? 'pl-0' : 'pl-0'}`}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 border-b border-amber-200 bg-amber-100/80 backdrop-blur-sm">
           <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-amber-900">De-chickins Admin Panel</h1>
+              <h1 className="text-xl font-bold text-amber-900"></h1>
             </div>
             <div className="flex items-center gap-4">
               <Button

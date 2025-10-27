@@ -1,15 +1,18 @@
 import type { Metadata } from 'next'
-import { Header } from "@/components/header"
-import { ProductCard } from "@/components/product-card"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
+import Image from "next/image"
 import { getAllProducts } from "@/lib/product-manager"
+import { formatCurrency } from "@/lib/utils"
 import { Product } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: 'Shop All Products | De-chickins',
-  description: 'Browse our complete collection of premium clothing. Find the perfect style for you from our wide range of apparel for men and women.',
+  title: 'Shop | De-chickins',
+  description: 'Browse our complete collection of premium clothing at De-chickins. Find the perfect style for you.',
   openGraph: {
-    title: 'Shop All Products - De-chickins',
-    description: 'Discover our full collection of premium clothing. Shop stylish apparel for men and women with fast delivery and quality assurance.',
+    title: 'Shop - De-chickins',
+    description: 'Browse our complete collection of premium clothing. Find the perfect style for you.',
     url: 'https://www.de-chickins.com/shop',
     siteName: 'De-chickins',
     images: [
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
         url: '/og-shop.jpg',
         width: 1200,
         height: 630,
-        alt: 'De-chickins - All Products Collection'
+        alt: 'De-chickins Shop - Premium Clothing Collection'
       }
     ],
     locale: 'en_US',
@@ -25,61 +28,64 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop All Products - De-chickins',
-    description: 'Discover our full collection of premium clothing. Shop stylish apparel for men and women with fast delivery and quality assurance.',
+    title: 'Shop - De-chickins',
+    description: 'Browse our complete collection of premium clothing. Find the perfect style for you.',
     images: ['/twitter-shop.jpg'],
   },
 }
 
 export default async function ShopPage() {
   const products: Product[] = await getAllProducts()
-  const featuredProducts = products.slice(0, 3)
 
   return (
     <div className="min-h-screen bg-amber-50">
-      <Header />
-
-      <div className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-amber-900">Our Collection</h1>
-          <p className="text-lg sm:text-xl text-amber-900/80 text-pretty max-w-2xl mx-auto">
-            Discover our curated collection of stylish clothing. Click any product to order.
-          </p>
-          <div className="bg-amber-100 border border-amber-300 rounded-lg p-4 max-w-2xl mx-auto mt-4">
-            <p className="text-amber-900 font-medium">Order via WhatsApp</p>
-            <p className="text-amber-900/80 text-sm mt-1">Click "View" on any product to order directly via WhatsApp. Full e-commerce features coming soon!</p>
+      <section className="py-12 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-bold mb-3 text-amber-900">Our Collection</h1>
+            <p className="text-amber-900/70 max-w-2xl mx-auto">
+              Discover our carefully curated selection of premium clothing designed for style and comfort.
+            </p>
           </div>
-        </div>
 
-        {/* Featured Products */}
-        {featuredProducts.length > 0 && (
-          <section className="mb-12 sm:mb-16">
-            <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-amber-900">Featured Items</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+          {products.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-amber-900/70">No products available at the moment.</p>
             </div>
-          </section>
-        )}
-
-        {/* All Products */}
-        {products.length > 0 ? (
-          <section>
-            <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-amber-900">All Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <Card
+                  key={product.id}
+                  className="group border-0 shadow-sm hover:shadow-md transition-shadow bg-white"
+                >
+                  <CardContent className="p-0">
+                    <div className="aspect-square relative overflow-hidden rounded-t-lg">
+                      <Image
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-medium text-sm mb-1 text-amber-900 group-hover:text-amber-700 transition-colors">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-semibold text-amber-700">{formatCurrency(product.price)}</span>
+                        <Button size="sm" variant="outline" className="text-xs h-7 px-2 border-amber-300 text-amber-900 hover:bg-amber-100" asChild>
+                          <Link href={`/product/${product.id}`}>View</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          </section>
-        ) : (
-          <section className="text-center py-12">
-            <h2 className="text-xl font-bold mb-4 text-amber-900">No Products Available</h2>
-            <p className="text-amber-900/70">Check back later for new products.</p>
-          </section>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
     </div>
   )
 }

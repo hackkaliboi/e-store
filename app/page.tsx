@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Header } from "@/components/header"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -43,8 +42,6 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-amber-50">
-      <Header />
-
       <HeroCarousel />
 
       {/* Featured Products Section - Simplified */}

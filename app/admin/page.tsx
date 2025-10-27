@@ -125,7 +125,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-amber-900">Dashboard</h2>
-        <p className="text-amber-900/70">Welcome to your De-chickins Admin Panel</p>
+        <p className="text-amber-900/70">Welcome to your admin dashboard</p>
       </div>
 
       {/* Stats cards */}

@@ -115,15 +115,24 @@ export default function ProductsPage() {
 
         setUploading(true)
         try {
+            console.log('Attempting to upload file:', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            })
+            
             const publicUrl = await uploadProductImage(file, fileName)
 
             if (publicUrl) {
+                console.log('Image uploaded successfully:', publicUrl)
                 setFormData(prev => ({ ...prev, image: publicUrl }))
                 setMessage({ type: "success", text: "Image uploaded successfully!" })
             } else {
-                setMessage({ type: "error", text: "Failed to upload image!" })
+                console.log('Failed to upload image - no URL returned')
+                setMessage({ type: "error", text: "Failed to upload image! Check console for details." })
             }
         } catch (error) {
+            console.error('Error uploading image:', error)
             setMessage({ type: "error", text: "Error uploading image: " + (error as Error).message })
         } finally {
             setUploading(false)

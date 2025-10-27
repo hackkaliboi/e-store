@@ -181,23 +181,39 @@ export const uploadProductImage = async (file: File, fileName: string): Promise<
     }
 
     try {
+        console.log('Starting image upload process...')
+        console.log('File details:', {
+            name: file.name,
+            size: file.size,
+            type: file.type
+        })
+        
         const fileExt = fileName.split('.').pop()
         const filePath = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+        console.log('Generated file path:', filePath)
 
-        const { error: uploadError } = await supabase.storage
+        const { data, error: uploadError } = await supabase.storage
             .from('products')
             .upload(filePath, file)
 
         if (uploadError) {
             console.error('Error uploading image:', uploadError)
+            console.error('Error details:', {
+                message: uploadError.message,
+                // Log the entire error object to see what properties are available
+                error: uploadError
+            })
             return null
         }
+
+        console.log('Upload successful, data:', data)
 
         // Get the public URL for the uploaded image
         const { data: { publicUrl } } = supabase.storage
             .from('products')
             .getPublicUrl(filePath)
 
+        console.log('Generated public URL:', publicUrl)
         return publicUrl
     } catch (error) {
         console.error('Error uploading image:', error)

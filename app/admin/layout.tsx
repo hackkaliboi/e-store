@@ -29,6 +29,9 @@ export default function AdminLayout({
   const router = useRouter()
 
   useEffect(() => {
+    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+    // Uncomment the following lines to re-enable authentication:
+    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
@@ -78,9 +81,16 @@ export default function AdminLayout({
         unsubscribe()
       }
     }
+    */
+
+    // Skip authentication for development
+    setLoading(false)
   }, [router])
 
   const handleLogout = async () => {
+    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+    // Uncomment the following lines to re-enable authentication:
+    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
@@ -97,14 +107,23 @@ export default function AdminLayout({
     } catch (error) {
       console.error("Error during logout:", error)
     }
+    */
+
+    // Simple redirect for development
+    router.push("/admin/login")
+    router.refresh()
   }
 
+  // Simplified navigation for product management only
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: BarChart3 },
     { name: "Products", href: "/admin/products", icon: Package },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ]
 
+  // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+  // Uncomment the following lines to re-enable authentication:
+  /*
   if (loading) {
     return (
       <div className="min-h-screen bg-amber-50 flex items-center justify-center">
@@ -117,6 +136,7 @@ export default function AdminLayout({
   if (!user && window.location.pathname !== "/admin/login") {
     return null
   }
+  */
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -133,9 +153,8 @@ export default function AdminLayout({
       </div>
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 bg-amber-800 text-amber-50 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 ${sidebarCollapsed ? 'w-20' : 'w-64'}`}>
+      <div className={`fixed inset-y-0 left-0 z-40 bg-amber-800 text-amber-50 transition-all duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0 ${sidebarCollapsed ? 'w-20' : 'w-64'}`}>
         <div className="flex h-full flex-col">
           {/* Sidebar header */}
           <div className="flex h-16 items-center border-b border-amber-700 px-4">
@@ -150,7 +169,7 @@ export default function AdminLayout({
                 <div className="bg-amber-600 rounded-lg w-8 h-8 flex items-center justify-center">
                   <span className="font-bold text-white">De</span>
                 </div>
-                <span className="text-lg font-semibold">De-chickins</span>
+                <span className="text-lg font-semibold">De-chickins Admin</span>
               </Link>
             )}
             {/* Collapse/Expand button */}
@@ -172,9 +191,8 @@ export default function AdminLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors ${
-                    sidebarCollapsed ? 'justify-center' : ''
-                  }`}
+                  className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors ${sidebarCollapsed ? 'justify-center' : ''
+                    }`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <Icon className="h-5 w-5" />
@@ -188,15 +206,13 @@ export default function AdminLayout({
           <div className="border-t border-amber-700 p-4">
             <button
               onClick={handleLogout}
-              className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors w-full text-left ${
-                sidebarCollapsed ? 'justify-center' : ''
-              }`}
+              className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors w-full text-left ${sidebarCollapsed ? 'justify-center' : ''
+                }`}
             >
               <LogOut className="h-5 w-5" />
               {!sidebarCollapsed && <span className="ml-3">Logout</span>}
             </button>
-            <Link href="/" className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors mt-2 ${
-                sidebarCollapsed ? 'justify-center' : ''
+            <Link href="/" className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-amber-700 transition-colors mt-2 ${sidebarCollapsed ? 'justify-center' : ''
               }`}>
               <Home className="h-5 w-5" />
               {!sidebarCollapsed && <span className="ml-3">Back to Site</span>}
@@ -206,14 +222,13 @@ export default function AdminLayout({
       </div>
 
       {/* Main content */}
-      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
-        sidebarCollapsed ? 'md:pl-20' : 'md:pl-64'
-      } ${sidebarOpen ? 'pl-0' : 'pl-0'}`}>
-        {/* Top bar */}
+      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:pl-20' : 'md:pl-64'
+        } ${sidebarOpen ? 'pl-0' : 'pl-0'}`}>
+        {/* Top bar - simplified for admin */}
         <header className="sticky top-0 z-30 border-b border-amber-200 bg-amber-100/80 backdrop-blur-sm">
           <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-amber-900"></h1>
+              <h1 className="text-xl font-bold text-amber-900">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
               <Button

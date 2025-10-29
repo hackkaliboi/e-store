@@ -96,14 +96,21 @@ export default function AdminLogin() {
                             <span className="font-bold text-white text-lg">De</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl text-amber-900">Redirecting...</CardTitle>
+                    <CardTitle className="text-2xl text-amber-900">Development Mode</CardTitle>
                     <CardDescription className="text-amber-900/70">
-                        Redirecting to admin dashboard
+                        Authentication bypassed for development
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-center text-amber-900/70">
-                        <p>You are being redirected to the admin dashboard...</p>
+                    <div className="text-center text-amber-900/70 space-y-4">
+                        <p>Redirecting to admin dashboard...</p>
+                        <div className="bg-amber-100 border-l-4 border-amber-500 p-4 mt-4">
+                            <p className="text-amber-700 font-medium">Authentication Disabled</p>
+                            <p className="text-amber-600 text-sm mt-1">
+                                For development purposes, authentication has been disabled.
+                                To re-enable, uncomment the authentication code in this file.
+                            </p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

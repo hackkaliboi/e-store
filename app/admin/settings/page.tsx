@@ -14,9 +14,12 @@ import {
     CreditCard,
     Shield,
     Bell,
-    Palette
+    Palette,
+    UserPlus
 } from "lucide-react"
+import { useAuth } from "@/context/auth-context"
 import { supabase } from "@/lib/supabase/client"
+import { addAdminUser } from "@/lib/supabase/auth"
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState({
@@ -28,42 +31,31 @@ export default function SettingsPage() {
         taxRate: "7.5",
         shippingCost: "1500"
     })
-    const [isAdmin, setIsAdmin] = useState(true) // Set to true to bypass auth
+    const [newAdminEmail, setNewAdminEmail] = useState("")
+    const [adminMessage, setAdminMessage] = useState<{ type: string; text: string } | null>(null)
     const router = useRouter()
+    const { user, isAdmin: isAdminUser, loading: authLoading } = useAuth()
 
     useEffect(() => {
-        // For development, bypass authentication
-        setIsAdmin(true)
-
-        // Comment out the original auth code
+        // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+        // Uncomment the following lines to re-enable authentication:
         /*
         const checkAdminAccess = async () => {
-            // Check if Supabase client is initialized
-            if (!supabase) {
-                console.error('Supabase client not initialized')
-                // In a real app, you might want to redirect to an error page
+            // Wait for auth state to load
+            if (authLoading) {
                 return
             }
 
-            try {
-                const { data: { user } } = await supabase.auth.getUser()
-
-                // For now, we'll allow access if user is logged in
-                // In a production app, you would check if the user has admin privileges
-                if (!user) {
-                    router.push("/admin/login")
-                    return
-                }
-
-                setIsAdmin(true)
-            } catch (error) {
-                console.error("Error checking admin access:", error)
+            // If user is not admin, redirect to home
+            if (!isAdminUser) {
+                router.push("/")
+                return
             }
         }
 
         checkAdminAccess()
         */
-    }, [router])
+    }, [isAdminUser, authLoading, router])
 
     const handleSave = () => {
         // In a real app, this would save to a database
@@ -74,12 +66,66 @@ export default function SettingsPage() {
         setSettings(prev => ({ ...prev, [field]: value }))
     }
 
-    // Always allow access for development
+    const handleAddAdmin = async () => {
+        if (!newAdminEmail) {
+            setAdminMessage({ type: "error", text: "Please enter an email address" })
+            return
+        }
+
+        // Check if Supabase client is initialized
+        if (!supabase) {
+            setAdminMessage({ type: "error", text: "Supabase client not initialized" })
+            return
+        }
+
+        try {
+            // First, find the user by email in the auth.users table
+            const { data: users, error: userError } = await supabase
+                .from('users')
+                .select('id')
+                .eq('email', newAdminEmail)
+
+            if (userError || !users || users.length === 0) {
+                setAdminMessage({ type: "error", text: "User not found. Please check the email address." })
+                return
+            }
+
+            const userId = users[0].id
+
+            // Update user's profile type to admin using our helper function
+            const result = await addAdminUser(userId)
+
+            if (result.error) {
+                // Handle error properly
+                if (result.error instanceof Error) {
+                    setAdminMessage({ type: "error", text: "Failed to add admin user: " + result.error.message })
+                } else {
+                    setAdminMessage({ type: "error", text: "Failed to add admin user" })
+                }
+            } else {
+                setAdminMessage({ type: "success", text: "Admin user added successfully!" })
+                setNewAdminEmail("")
+            }
+        } catch (error) {
+            setAdminMessage({ type: "error", text: "An error occurred: " + (error as Error).message })
+        }
+    }
+
+    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+    // Uncomment the following lines to re-enable authentication:
     /*
-    if (!isAdmin) {
+    if (authLoading) {
         return (
             <div className="flex items-center justify-center h-64">
                 <p className="text-amber-900">Checking access...</p>
+            </div>
+        )
+    }
+
+    if (!isAdminUser) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-amber-900">Access denied. Admin privileges required.</p>
             </div>
         )
     }
@@ -120,6 +166,10 @@ export default function SettingsPage() {
                                 <Palette className="w-4 h-4 mr-3" />
                                 Appearance
                             </a>
+                            <a href="#admin" className="flex items-center px-3 py-2 text-sm font-medium text-amber-900 hover:bg-amber-50 rounded-lg">
+                                <UserPlus className="w-4 h-4 mr-3" />
+                                Admin Management
+                            </a>
                         </nav>
                     </CardContent>
                 </Card>
@@ -133,8 +183,9 @@ export default function SettingsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form className="space-y-6">
-                            <div>
+                        <div className="space-y-8">
+                            {/* General Settings */}
+                            <div id="general">
                                 <h3 className="text-lg font-medium text-amber-900 mb-4">Store Information</h3>
                                 <div className="space-y-4">
                                     <div>
@@ -160,7 +211,8 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            <div>
+                            {/* Financial Settings */}
+                            <div id="payments">
                                 <h3 className="text-lg font-medium text-amber-900 mb-4">Financial Settings</h3>
                                 <div className="space-y-4">
                                     <div>
@@ -197,7 +249,8 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            <div>
+                            {/* Notifications */}
+                            <div id="notifications">
                                 <h3 className="text-lg font-medium text-amber-900 mb-4">Notifications</h3>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
@@ -226,6 +279,40 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
+                            {/* Admin Management */}
+                            <div id="admin">
+                                <h3 className="text-lg font-medium text-amber-900 mb-4">Admin Management</h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="newAdminEmail" className="text-amber-900">Add New Admin User</Label>
+                                        <div className="flex gap-2 mt-1">
+                                            <Input
+                                                id="newAdminEmail"
+                                                type="email"
+                                                value={newAdminEmail}
+                                                onChange={(e) => setNewAdminEmail(e.target.value)}
+                                                placeholder="user@example.com"
+                                                className="border-amber-300 focus:ring-amber-500 flex-1"
+                                            />
+                                            <Button
+                                                onClick={handleAddAdmin}
+                                                className="bg-amber-700 hover:bg-amber-800 text-white"
+                                            >
+                                                Add Admin
+                                            </Button>
+                                        </div>
+                                        {adminMessage && (
+                                            <div className={`mt-2 p-2 rounded text-sm ${adminMessage.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                                {adminMessage.text}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-sm text-amber-900/70">
+                                        Enter the email address of a registered user to grant them admin privileges.
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="flex justify-end">
                                 <Button
                                     type="button"
@@ -235,7 +322,7 @@ export default function SettingsPage() {
                                     Save Changes
                                 </Button>
                             </div>
-                        </form>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

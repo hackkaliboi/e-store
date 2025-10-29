@@ -5,7 +5,8 @@ import {
   getRelatedProducts as supabaseGetRelatedProducts,
   addProduct as supabaseAddProduct,
   updateProduct as supabaseUpdateProduct,
-  deleteProduct as supabaseDeleteProduct
+  deleteProduct as supabaseDeleteProduct,
+  uploadProductImage as supabaseUploadProductImage
 } from "./supabase/product-manager"
 
 // Export Supabase functions directly
@@ -15,6 +16,7 @@ export const getRelatedProducts = supabaseGetRelatedProducts
 export const addProduct = supabaseAddProduct
 export const updateProduct = supabaseUpdateProduct
 export const deleteProduct = supabaseDeleteProduct
+export const uploadProductImage = supabaseUploadProductImage
 
 // Simple admin authentication (in a real app, this would be more secure)
 const ADMIN_PASSWORD = "admin123" // This should be stored securely in a real app

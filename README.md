@@ -77,7 +77,7 @@ styles/               # Global styles
 This project uses Supabase for backend services. For complete setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
 
 The following SQL setup file is available:
-- `supabase_setup.sql` - Complete setup for a fresh Supabase project including tables and storage
+- `supabase_unified_setup.sql` - Complete unified setup for a fresh Supabase project including tables, storage, and policies
 
 ### Building for Production
 

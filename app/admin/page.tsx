@@ -14,7 +14,7 @@ import {
 import { getAllProducts } from "@/lib/product-manager"
 import { Product } from "@/lib/products"
 import { formatCurrency } from "@/lib/utils"
-import { supabase } from "@/lib/supabase/client"
+import { useAuth } from "@/context/auth-context"
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([])
@@ -25,46 +25,37 @@ export default function AdminDashboard() {
     averagePrice: 0
   })
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(true) // Set to true to bypass auth
+  const { user, isAdmin, loading: authLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    // For development, bypass authentication and load products directly
-    setIsAdmin(true)
-    loadProducts()
-
-    // Comment out the original auth code
+    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+    // Uncomment the following lines to re-enable authentication:
     /*
     const checkAdminAccess = async () => {
-      // Check if Supabase client is initialized
-      if (!supabase) {
-        console.error('Supabase client not initialized')
-        // In a real app, you might want to redirect to an error page
-        setLoading(false)
+      // Wait for auth state to load
+      if (authLoading) {
         return
       }
 
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
+      console.log('Admin dashboard auth state:', { user: user?.email, isAdmin, authLoading })
 
-        // For now, we'll allow access if user is logged in
-        // In a production app, you would check if the user has admin privileges
-        if (!user) {
-          router.push("/admin/login")
-          return
-        }
-
-        setIsAdmin(true)
-        loadProducts()
-      } catch (error) {
-        console.error("Error checking admin access:", error)
-        setLoading(false)
+      // If user is not admin, redirect to home
+      if (!isAdmin) {
+        console.log('User is not admin, redirecting to home')
+        router.push("/")
+        return
       }
+
+      loadProducts()
     }
 
     checkAdminAccess()
     */
-  }, [router])
+
+    // Directly load products for development
+    loadProducts()
+  }, [isAdmin, authLoading, router, user])
 
   const loadProducts = async () => {
     setLoading(true)
@@ -102,12 +93,21 @@ export default function AdminDashboard() {
 
   const categoryData = getCategoryData()
 
-  // Always allow access for development
+  // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+  // Uncomment the following lines to re-enable authentication:
   /*
-  if (!isAdmin) {
+  if (authLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-amber-900">Checking access...</p>
+      </div>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-amber-900">Access denied. Admin privileges required.</p>
       </div>
     )
   }

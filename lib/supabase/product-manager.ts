@@ -187,26 +187,78 @@ export const uploadProductImage = async (file: File, fileName: string): Promise<
             size: file.size,
             type: file.type
         })
-        
-        const fileExt = fileName.split('.').pop()
+
+        // Check if user is authenticated
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            console.error('Authentication error:', authError?.message || 'User not authenticated');
+            throw new Error('User not authenticated');
+        }
+
+        console.log('User authenticated:', user.email);
+
+        // Sanitize filename
+        const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_')
+        const fileExt = sanitizedFileName.split('.').pop()
         const filePath = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
         console.log('Generated file path:', filePath)
 
+        // Try to upload to products bucket first
+        console.log('Attempting to upload to products bucket...')
         const { data, error: uploadError } = await supabase.storage
             .from('products')
-            .upload(filePath, file)
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false
+            })
 
         if (uploadError) {
-            console.error('Error uploading image:', uploadError)
+            console.error('Error uploading to products bucket:', uploadError)
             console.error('Error details:', {
                 message: uploadError.message,
-                // Log the entire error object to see what properties are available
-                error: uploadError
+                code: (uploadError as any).code,
+                statusCode: (uploadError as any).statusCode
             })
-            return null
+
+            // Try media bucket as fallback
+            console.log('Attempting to upload to media bucket...')
+            const { data: mediaData, error: mediaError } = await supabase.storage
+                .from('media')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                })
+
+            if (mediaError) {
+                console.error('Error uploading to media bucket:', mediaError)
+                console.error('Error details:', {
+                    message: mediaError.message,
+                    code: (mediaError as any).code,
+                    statusCode: (mediaError as any).statusCode
+                })
+
+                // Provide more specific error information
+                if (mediaError.message.includes('denied')) {
+                    throw new Error('Permission denied. Please check storage policies.');
+                } else if (mediaError.message.includes('size') || (mediaError as any).statusCode === 413) {
+                    throw new Error('File too large. Please try a smaller image.');
+                } else {
+                    throw new Error(`Upload failed: ${mediaError.message}`);
+                }
+            }
+
+            console.log('Upload successful to media bucket:', mediaData)
+
+            // Get the public URL for the uploaded image
+            const { data: { publicUrl } } = supabase.storage
+                .from('media')
+                .getPublicUrl(filePath)
+
+            console.log('Generated public URL:', publicUrl)
+            return publicUrl
         }
 
-        console.log('Upload successful, data:', data)
+        console.log('Upload successful to products bucket:', data)
 
         // Get the public URL for the uploaded image
         const { data: { publicUrl } } = supabase.storage
@@ -217,7 +269,7 @@ export const uploadProductImage = async (file: File, fileName: string): Promise<
         return publicUrl
     } catch (error) {
         console.error('Error uploading image:', error)
-        return null
+        throw error;
     }
 }
 
@@ -239,13 +291,23 @@ export const deleteProductImage = async (imageUrl: string): Promise<boolean> => 
             return false
         }
 
-        const { error } = await supabase.storage
+        // Try to delete from products bucket first
+        console.log('Attempting to delete from products bucket:', filePath)
+        const { error: productsError } = await supabase.storage
             .from('products')
             .remove([filePath])
 
-        if (error) {
-            console.error('Error deleting image:', error)
-            return false
+        // If that fails, try media bucket
+        if (productsError) {
+            console.log('Failed to delete from products bucket, trying media bucket...')
+            const { error: mediaError } = await supabase.storage
+                .from('media')
+                .remove([filePath])
+
+            if (mediaError) {
+                console.error('Error deleting image:', mediaError)
+                return false
+            }
         }
 
         return true

@@ -176,6 +176,15 @@ export default async function HomePage() {
             <Button className="text-sm px-6 py-2 h-auto rounded-full bg-amber-700 hover:bg-amber-800 text-white" asChild>
               <Link href="/shop">Browse Products</Link>
             </Button>
+            <a
+              href="https://wa.me/2348036406671"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" className="text-sm px-6 py-2 h-auto rounded-full border-amber-300 text-amber-900 hover:bg-amber-100">
+                Order on WhatsApp
+              </Button>
+            </a>
             <Button variant="outline" className="text-sm px-6 py-2 h-auto rounded-full border-amber-300 text-amber-900 hover:bg-amber-100" asChild>
               <Link href="/contact">Contact Us</Link>
             </Button>

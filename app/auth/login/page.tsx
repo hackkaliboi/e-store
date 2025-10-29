@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "@/lib/supabase/auth"
+import { isAdmin } from "@/lib/supabase/auth"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -31,9 +32,22 @@ export default function LoginPage() {
                     setError("Failed to sign in")
                 }
             } else {
-                // Redirect to home page after successful login
-                router.push("/")
-                router.refresh()
+                // Check if user is admin and redirect accordingly
+                if (data?.user) {
+                    // Add a small delay to ensure auth state is properly set
+                    setTimeout(async () => {
+                        const adminStatus = await isAdmin(data.user)
+                        if (adminStatus) {
+                            router.push("/admin")
+                        } else {
+                            router.push("/")
+                        }
+                        router.refresh()
+                    }, 100)
+                } else {
+                    router.push("/")
+                    router.refresh()
+                }
             }
         } catch (err) {
             setError("An unexpected error occurred. Please try again.")

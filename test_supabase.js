@@ -1,9 +1,18 @@
 // Simple test script to verify Supabase connection
+require('dotenv').config({ path: '.env.local' });
+
 const { createClient } = require('@supabase/supabase-js')
 
 // These should match your .env.local file
-const supabaseUrl = 'https://tpxexyirxbngrahrfcmn.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRweGV4eWlyeGJuZ3JhaHJmY21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMTY0ODEsImV4cCI6MjA3Njg5MjQ4MX0.ec_OpibImkwVQTjz7C3SbcxPD-_wpXyS-TMZOK6OoQU'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.log('⚠️  Please make sure your .env.local file contains:');
+    console.log('   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url');
+    console.log('   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key');
+    process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

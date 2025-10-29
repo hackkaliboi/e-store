@@ -4,14 +4,11 @@ import type React from "react"
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Phone } from "lucide-react"
 import { useState } from "react"
-import { useAuth } from "@/lib/supabase/use-auth"
-import { LogoutButton } from "./logout-button"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, loading } = useAuth()
 
   return (
     <header className="border-b border-amber-200/30 bg-amber-50/95 backdrop-blur supports-[backdrop-filter]:bg-amber-50/60 sticky top-0 z-50">
@@ -48,20 +45,16 @@ export function Header() {
             <Link href="/contact" className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors">
               Contact
             </Link>
-            {loading ? (
-              <div className="h-8 w-20 bg-amber-200 rounded animate-pulse"></div>
-            ) : user ? (
-              <LogoutButton />
-            ) : (
-              <>
-                <Link href="/auth/login" className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors">
-                  Login
-                </Link>
-                <Link href="/auth/signup" className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors">
-                  Sign Up
-                </Link>
-              </>
-            )}
+            {/* WhatsApp contact link for purchases */}
+            <a
+              href="https://wa.me/2348036406671"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors flex items-center"
+            >
+              <Phone className="h-4 w-4 mr-1" />
+              Order on WhatsApp
+            </a>
           </div>
         </nav>
 
@@ -90,30 +83,17 @@ export function Header() {
               >
                 Contact
               </Link>
-              {loading ? (
-                <div className="h-8 w-20 bg-amber-200 rounded animate-pulse my-2"></div>
-              ) : user ? (
-                <div className="py-2">
-                  <LogoutButton />
-                </div>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/login"
-                    className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
+              {/* WhatsApp contact link for purchases */}
+              <a
+                href="https://wa.me/2348036406671"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors py-2 flex items-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Phone className="h-4 w-4 mr-1" />
+                Order on WhatsApp
+              </a>
             </div>
           </div>
         )}

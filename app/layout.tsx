@@ -3,7 +3,9 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Header } from '@/components/header'
+import { ConditionalHeader } from '@/components/conditional-header'
+import { Toaster } from 'sonner'
+import { ClientAuthProvider } from '@/components/auth-provider'
 
 export const metadata: Metadata = {
   title: {
@@ -70,9 +72,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Header />
-        {children}
-        <Analytics />
+        <ClientAuthProvider>
+          <ConditionalHeader />
+          {children}
+          <Toaster />
+          <Analytics />
+        </ClientAuthProvider>
       </body>
     </html>
   )

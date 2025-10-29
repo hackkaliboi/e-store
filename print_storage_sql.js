@@ -1,39 +1,7 @@
--- Supabase Complete Setup Script
--- This script creates all necessary tables and storage for the E-Store application
-
--- Create the products table
-create table products (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default now(),
-  name text not null,
-  price decimal not null,
-  image text,
-  description text,
-  category text,
-  features text[]
-);
-
--- Create profiles table for user information
-create table profiles (
-  id uuid references auth.users on delete cascade not null primary key,
-  created_at timestamp with time zone default now(),
-  username text unique,
-  full_name text,
-  avatar_url text,
-  website text,
-  updated_at timestamp with time zone default now()
-);
-
--- Create admin users table for role-based access control
-create table admin_users (
-  id uuid references auth.users on delete cascade not null primary key,
-  created_at timestamp with time zone default now(),
-  is_admin boolean default true
-);
-
--- Enable Row Level Security on tables
-alter table profiles enable row level security;
-alter table admin_users enable row level security;
+// Script to print only the storage-related SQL commands
+console.log(`
+-- STORAGE SETUP COMMANDS
+-- Run these commands in your Supabase SQL Editor
 
 -- Create storage bucket for product images
 insert into storage.buckets (id, name, public)
@@ -96,3 +64,4 @@ using (
   bucket_id = 'media' 
   and auth.role() = 'authenticated'
 );
+`);

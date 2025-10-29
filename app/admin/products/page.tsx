@@ -2,22 +2,29 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-    addProduct,
+    Plus,
+    Search,
+    Edit,
+    Trash2,
+    Upload,
+    X
+} from "lucide-react"
+import {
     getAllProducts,
+    addProduct,
     updateProduct,
     deleteProduct,
     uploadProductImage
-} from "@/lib/supabase/product-manager"
+} from "@/lib/product-manager"
 import { Product } from "@/lib/products"
+import { useAuth } from "@/context/auth-context"
 import { formatCurrency } from "@/lib/utils"
-import { PlusCircle, Edit3, Trash2, Search, Upload } from "lucide-react"
-import { supabase } from "@/lib/supabase/client"
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([])
@@ -34,47 +41,36 @@ export default function ProductsPage() {
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("all")
     const [loading, setLoading] = useState(true)
-    const [isAdmin, setIsAdmin] = useState(true) // Set to true to bypass auth
     const [uploading, setUploading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
+    const { user, isAdmin, loading: authLoading } = useAuth()
 
     useEffect(() => {
-        // For development, bypass authentication and load products directly
-        loadProducts()
-
-        // Comment out the original auth code
+        // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+        // Uncomment the following lines to re-enable authentication:
         /*
         const checkAdminAccess = async () => {
-            // Check if Supabase client is initialized
-            if (!supabase) {
-                console.error('Supabase client not initialized')
-                // In a real app, you might want to redirect to an error page
-                setLoading(false)
+            // Wait for auth state to load
+            if (authLoading) {
                 return
             }
 
-            try {
-                const { data: { user } } = await supabase.auth.getUser()
-
-                // For now, we'll allow access if user is logged in
-                // In a production app, you would check if the user has admin privileges
-                if (!user) {
-                    router.push("/admin/login")
-                    return
-                }
-
-                setIsAdmin(true)
-                loadProducts()
-            } catch (error) {
-                console.error("Error checking admin access:", error)
-                setLoading(false)
+            // If user is not admin, redirect to home
+            if (!isAdmin) {
+                router.push("/")
+                return
             }
+
+            loadProducts()
         }
 
         checkAdminAccess()
         */
-    }, [router])
+
+        // Directly load products for development
+        loadProducts()
+    }, [isAdmin, authLoading, router])
 
     const loadProducts = async () => {
         setLoading(true)
@@ -105,6 +101,12 @@ export default function ProductsPage() {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
+    const triggerFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click()
+        }
+    }
+
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
             return
@@ -120,7 +122,7 @@ export default function ProductsPage() {
                 size: file.size,
                 type: file.type
             })
-            
+
             const publicUrl = await uploadProductImage(file, fileName)
 
             if (publicUrl) {
@@ -133,7 +135,8 @@ export default function ProductsPage() {
             }
         } catch (error) {
             console.error('Error uploading image:', error)
-            setMessage({ type: "error", text: "Error uploading image: " + (error as Error).message })
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            setMessage({ type: "error", text: `Error uploading image: ${errorMessage}` })
         } finally {
             setUploading(false)
             // Clear the file input
@@ -235,22 +238,33 @@ export default function ProductsPage() {
         })
     }
 
-    const triggerFileInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
-
-    // Always allow access for development
+    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
+    // Uncomment the following lines to re-enable authentication:
     /*
-    if (!isAdmin) {
+    if (authLoading) {
         return (
             <div className="flex items-center justify-center h-64">
                 <p className="text-amber-900">Checking access...</p>
             </div>
         )
     }
+
+    if (!isAdmin) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-amber-900">Access denied. Admin privileges required.</p>
+            </div>
+        )
+    }
     */
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-amber-900">Loading products...</p>
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-6">
@@ -276,7 +290,7 @@ export default function ProductsPage() {
                 <Card className="bg-white lg:col-span-1">
                     <CardHeader>
                         <CardTitle className="text-amber-900 flex items-center">
-                            {editingProduct ? <Edit3 className="w-5 h-5 mr-2" /> : <PlusCircle className="w-5 h-5 mr-2" />}
+                            {editingProduct ? <Edit className="w-5 h-5 mr-2" /> : <Plus className="w-5 h-5 mr-2" />}
                             {editingProduct ? "Edit Product" : "Add New Product"}
                         </CardTitle>
                     </CardHeader>
@@ -438,7 +452,7 @@ export default function ProductsPage() {
                                         <p className="text-sm mt-2 line-clamp-2 text-amber-900/80">{product.description}</p>
                                         <div className="flex gap-2 mt-3">
                                             <Button size="sm" onClick={() => handleEdit(product)} className="bg-amber-700 hover:bg-amber-800 text-white">
-                                                <Edit3 className="w-4 h-4 mr-1" />
+                                                <Edit className="w-4 h-4 mr-1" />
                                                 Edit
                                             </Button>
                                             <Button

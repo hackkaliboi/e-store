@@ -47,64 +47,24 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 
 This project provides a SQL script for setting up Supabase with a fresh project:
 
-#### supabase_setup.sql
-Use this script to create all necessary tables and storage buckets on a fresh Supabase project:
-```sql
--- Supabase Complete Setup Script
--- This script creates all necessary tables and storage for the E-Store application
-
--- Create the products table
-create table products (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default now(),
-  name text not null,
-  price decimal not null,
-  image text,
-  description text,
-  category text,
-  features text[]
-);
-
--- Create profiles table for user information
-create table profiles (
-  id uuid references auth.users on delete cascade not null primary key,
-  created_at timestamp with time zone default now(),
-  username text unique,
-  full_name text,
-  avatar_url text,
-  website text,
-  updated_at timestamp with time zone default now()
-);
-
--- Create admin users table for role-based access control
-create table admin_users (
-  id uuid references auth.users on delete cascade not null primary key,
-  created_at timestamp with time zone default now(),
-  is_admin boolean default true
-);
-
--- Enable Row Level Security on tables
-alter table profiles enable row level security;
-alter table admin_users enable row level security;
-
--- Create storage bucket for product images
-insert into storage.buckets (id, name, public)
-values ('products', 'products', true)
-on conflict (id) do update set public = true;
-
--- Create storage bucket for other media (avatars, etc.)
-insert into storage.buckets (id, name, public)
-values ('media', 'media', true)
-on conflict (id) do update set public = true;
-```
+#### supabase_unified_setup.sql
+Use this single script to create all necessary tables, storage buckets, and policies on a fresh Supabase project. This unified script includes:
+- All necessary tables (products, profiles with profile_type field)
+- Storage buckets (products, media)
+- All required Row Level Security (RLS) policies
+- Proper permissions for admin and regular users
 
 ### 4. Running the Setup Script
 
 1. In the Supabase dashboard, go to "SQL Editor" in the left sidebar
-2. Copy and paste the contents of `supabase_setup.sql` into the editor
+2. Copy and paste the contents of `supabase_unified_setup.sql` into the editor
 3. Click "Run" to execute the script
 
-This script is designed to work with a fresh Supabase project and will create all necessary tables and storage buckets without any conflicts.
+This script is designed to work with a fresh Supabase project and will create all necessary tables, storage buckets, and policies without any conflicts. If you encounter ownership errors with storage policies, follow the instructions in the comments at the end of the script.
+
+### 5. Migration from Previous Version
+
+If you're updating from a previous version of the project, see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for detailed instructions on migrating your existing data to the new structure.
 
 ## Authentication Setup
 
@@ -117,8 +77,10 @@ This script is designed to work with a fresh Supabase project and will create al
 To access the admin panel:
 
 1. Create an admin user account through the Supabase authentication interface
-2. Add the user to the `admin_users` table with `is_admin` set to `true`
+2. Update the user's profile in the `profiles` table to set `profile_type` to `'admin'`
 3. Access the admin panel at `/admin`
+
+Alternatively, you can use the Admin Management section in the admin dashboard to add admin users by email.
 
 ## Development
 
@@ -147,6 +109,7 @@ pnpm start
 2. **Authentication errors**: Check that your API key is correct and that you've enabled the email provider
 3. **Connection errors**: Verify that your project URL and API key are correct in the `.env.local` file
 4. **Storage errors**: Make sure you've created the "products" bucket and set appropriate policies
+5. **Storage policy ownership error**: If you encounter "ERROR: 42501: must be owner of table objects", follow the instructions in `supabase_unified_setup.sql` or enable RLS through the Supabase dashboard interface.
 
 ### Testing Your Setup
 

@@ -46,6 +46,20 @@ export default async function ShopPage() {
             <p className="text-amber-900/70 max-w-2xl mx-auto">
               Discover our carefully curated selection of premium clothing designed for style and comfort.
             </p>
+            {/* WhatsApp ordering CTA */}
+            <div className="mt-4 p-4 bg-amber-100 rounded-lg max-w-2xl mx-auto">
+              <p className="text-amber-900 mb-2">
+                <span className="font-semibold">Ready to order?</span> Contact us on WhatsApp to place your order
+              </p>
+              <a
+                href="https://wa.me/2348036406671"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+              >
+                Order on WhatsApp
+              </a>
+            </div>
           </div>
 
           {products.length === 0 ? (

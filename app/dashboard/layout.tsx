@@ -1,35 +1,44 @@
 "use client"
 
-import { useAuth } from "@/lib/supabase/use-auth"
+import { useAuth } from "@/context/auth-context"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { LogoutButton } from "@/components/logout-button"
+import { useEffect } from "react"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { user, loading } = useAuth()
+  const { user, isAdmin, loading } = useAuth()
   const router = useRouter()
-  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
     if (!loading) {
       if (!user) {
         // Redirect to login if not authenticated
         router.push('/auth/login')
+      } else if (isAdmin) {
+        // Redirect admin users to admin dashboard
+        router.push('/admin')
       }
-      setChecked(true)
     }
-  }, [user, loading, router])
+  }, [user, isAdmin, loading, router])
 
-  if (!checked) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-amber-50 flex items-center justify-center">
         <p className="text-amber-900">Loading...</p>
       </div>
     )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  // Don't show dashboard to admin users
+  if (isAdmin) {
+    return null
   }
 
   return (
@@ -42,7 +51,6 @@ export default function DashboardLayout({
             <span className="text-sm text-amber-900/70">
               {user?.email}
             </span>
-            <LogoutButton />
           </div>
         </div>
       </header>

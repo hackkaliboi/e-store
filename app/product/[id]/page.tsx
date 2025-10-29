@@ -15,7 +15,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await getProductById(params.id)
-  
+
   if (!product) {
     return {
       title: 'Product Not Found | De-chickins',
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div>
               <h1 className="text-3xl font-bold text-amber-900 mb-4">{product.name}</h1>
               <p className="text-2xl font-semibold text-amber-700 mb-6">{formatCurrency(product.price)}</p>
-              
+
               {product.description && (
                 <div className="prose prose-amber max-w-none mb-8">
                   <p className="text-amber-900/80">{product.description}</p>
@@ -92,9 +92,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="flex-1 bg-amber-700 hover:bg-amber-800 text-white">
-                  Order via WhatsApp
-                </Button>
+                <a
+                  href={`https://wa.me/2348036406671?text=I'm%20interested%20in%20purchasing%20${encodeURIComponent(product.name)}%20(${formatCurrency(product.price)})`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1"
+                >
+                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
+                    Order via WhatsApp
+                  </Button>
+                </a>
                 <Button variant="outline" className="border-amber-300 text-amber-900 hover:bg-amber-100" asChild>
                   <Link href="/shop">Continue Shopping</Link>
                 </Button>

@@ -1,23 +1,23 @@
 // Test script to verify Supabase storage setup
 // Run this after setting up your Supabase project and running the storage setup SQL
 
+require('dotenv').config({ path: '.env.local' });
+
 const { createClient } = require('@supabase/supabase-js');
 
-// Replace these with your actual Supabase project URL and service role key
-const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY || 'YOUR_SERVICE_ROLE_KEY';
+// Use the same environment variables as the app
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Check if environment variables are set
-if (supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseServiceRole === 'YOUR_SERVICE_ROLE_KEY') {
-    console.log('⚠️  Please set your Supabase credentials as environment variables:');
-    console.log('   export SUPABASE_URL=your_supabase_url');
-    console.log('   export SUPABASE_SERVICE_ROLE_KEY=your_service_role_key');
-    console.log('');
-    console.log('Or replace the placeholder values in this file.');
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.log('⚠️  Please make sure your .env.local file contains:');
+    console.log('   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url');
+    console.log('   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key');
     process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceRole);
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function testStorageSetup() {
     console.log('Testing Supabase Storage Setup...');
@@ -51,31 +51,38 @@ async function testStorageSetup() {
             console.log('❌ Media bucket not found');
         }
 
-        // Test uploading a small file to products bucket
-        const testFile = new Blob(['Hello, World!'], { type: 'text/plain' });
-        const fileName = `test-upload-${Date.now()}.txt`;
+        // If buckets exist, test uploading a small file to products bucket
+        if (productsBucket) {
+            console.log('Testing upload to products bucket...');
+            const testFile = new Blob(['Hello, World!'], { type: 'text/plain' });
+            const fileName = `test-upload-${Date.now()}.txt`;
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('products')
-            .upload(fileName, testFile, {
-                cacheControl: '3600',
-                upsert: false
-            });
-
-        if (uploadError) {
-            console.error('Error uploading test file:', uploadError);
-        } else {
-            console.log('✅ Test file uploaded successfully:', uploadData);
-
-            // Clean up - delete the test file
-            const { error: deleteError } = await supabase.storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
                 .from('products')
-                .remove([fileName]);
+                .upload(fileName, testFile, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
 
-            if (deleteError) {
-                console.error('Error deleting test file:', deleteError);
+            if (uploadError) {
+                console.error('Error uploading test file:', uploadError);
+                // Log more details about the error
+                console.error('Error code:', uploadError.code);
+                console.error('Error message:', uploadError.message);
+                console.error('Error status:', uploadError.status);
             } else {
-                console.log('✅ Test file cleaned up successfully');
+                console.log('✅ Test file uploaded successfully:', uploadData);
+
+                // Clean up - delete the test file
+                const { error: deleteError } = await supabase.storage
+                    .from('products')
+                    .remove([fileName]);
+
+                if (deleteError) {
+                    console.error('Error deleting test file:', deleteError);
+                } else {
+                    console.log('✅ Test file cleaned up successfully');
+                }
             }
         }
 

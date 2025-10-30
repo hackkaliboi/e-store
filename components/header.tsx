@@ -4,11 +4,51 @@ import type React from "react"
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Phone } from "lucide-react"
-import { useState } from "react"
+import { Menu, X, Phone, LayoutDashboard } from "lucide-react"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase/client"
+import { isAdmin } from "@/lib/supabase/auth"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isAdminUser, setIsAdminUser] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        if (supabase) {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user) {
+            const adminStatus = await isAdmin(user)
+            setIsAdminUser(adminStatus)
+          }
+        }
+      } catch (error) {
+        console.error("Error checking admin status:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkAdminStatus()
+
+    // Listen for auth changes
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (session?.user) {
+          const adminStatus = await isAdmin(session.user)
+          setIsAdminUser(adminStatus)
+        } else {
+          setIsAdminUser(false)
+        }
+      })
+
+      return () => {
+        subscription?.unsubscribe()
+      }
+    }
+  }, [])
 
   return (
     <header className="border-b border-amber-200/30 bg-amber-50/95 backdrop-blur supports-[backdrop-filter]:bg-amber-50/60 sticky top-0 z-50">
@@ -47,7 +87,7 @@ export function Header() {
             </Link>
             {/* WhatsApp contact link for purchases */}
             <a
-              href="https://wa.me/2348036406671"
+              href="https://wa.me/2347052690110"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors flex items-center"
@@ -55,6 +95,13 @@ export function Header() {
               <Phone className="h-4 w-4 mr-1" />
               Order on WhatsApp
             </a>
+            {/* Dashboard button for admin users */}
+            {isAdminUser && (
+              <Link href="/admin" className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors flex items-center">
+                <LayoutDashboard className="h-4 w-4 mr-1" />
+                Dashboard
+              </Link>
+            )}
           </div>
         </nav>
 
@@ -85,7 +132,7 @@ export function Header() {
               </Link>
               {/* WhatsApp contact link for purchases */}
               <a
-                href="https://wa.me/2348036406671"
+                href="https://wa.me/2347052690110"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors py-2 flex items-center"
@@ -94,6 +141,17 @@ export function Header() {
                 <Phone className="h-4 w-4 mr-1" />
                 Order on WhatsApp
               </a>
+              {/* Dashboard button for admin users */}
+              {isAdminUser && (
+                <Link
+                  href="/admin"
+                  className="text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors py-2 flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <LayoutDashboard className="h-4 w-4 mr-1" />
+                  Dashboard
+                </Link>
+              )}
             </div>
           </div>
         )}

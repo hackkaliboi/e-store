@@ -1,90 +1,66 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { supabase } from "@/lib/supabase/client"
+import { signIn } from "@/lib/supabase/auth"
 import { isAdmin } from "@/lib/supabase/auth"
 
-export default function AdminLogin() {
+export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
 
-    useEffect(() => {
-        // Check if Supabase client is initialized
-        if (!supabase) {
-            console.error('Supabase client not initialized')
-            return
-        }
-
-        // Check if user is already logged in
-        const checkUser = async () => {
-            if (!supabase) {
-                return
-            }
-
-            try {
-                const { data: { user } } = await supabase.auth.getUser()
-                if (user) {
-                    // Check if user is admin
-                    const adminStatus = await isAdmin(user)
-                    if (adminStatus) {
-                        router.push("/admin")
-                    } else {
-                        // If not admin, show error and sign out
-                        setError("Access denied. Admin privileges required.")
-                        await supabase.auth.signOut()
-                    }
-                }
-            } catch (error) {
-                console.error("Error checking user:", error)
-            }
-        }
-
-        checkUser()
-    }, [router])
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
 
-        // Check if Supabase client is initialized
-        if (!supabase) {
-            setError("Authentication service not available. Please try again later.")
-            setLoading(false)
-            return
-        }
-
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            })
-
+            const { data, error } = await signIn(email, password)
+            
             if (error) {
-                setError(error.message)
-            } else if (data.user) {
-                // Check if user is admin
-                const adminStatus = await isAdmin(data.user)
-                if (adminStatus) {
-                    router.push("/admin")
-                    router.refresh()
+                // Handle error properly
+                if (error instanceof Error) {
+                    setError(error.message || "Failed to sign in")
                 } else {
-                    // If not admin, sign out and show error
-                    await supabase.auth.signOut()
-                    setError("Access denied. Admin privileges required.")
+                    setError("Failed to sign in")
+                }
+                setLoading(false)
+            } else {
+                // Check if user is admin and redirect accordingly
+                if (data?.user) {
+                    try {
+                        const adminStatus = await isAdmin(data.user)
+                        console.log("Admin status:", adminStatus)
+                        if (adminStatus) {
+                            console.log("Redirecting to admin dashboard")
+                            router.push("/admin")
+                        } else {
+                            console.log("Redirecting to home page")
+                            router.push("/")
+                        }
+                        // Refresh the page to update the header
+                        router.refresh()
+                    } catch (adminError) {
+                        console.error("Error checking admin status:", adminError)
+                        // Default to home page if there's an error checking admin status
+                        router.push("/")
+                        router.refresh()
+                    }
+                } else {
+                    router.push("/")
+                    router.refresh()
                 }
             }
         } catch (err) {
+            console.error("Sign in error:", err)
             setError("An unexpected error occurred. Please try again.")
-        } finally {
             setLoading(false)
         }
     }
@@ -98,9 +74,9 @@ export default function AdminLogin() {
                             <span className="font-bold text-white text-lg">De</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl text-amber-900">Admin Login</CardTitle>
+                    <CardTitle className="text-2xl text-amber-900">Sign In</CardTitle>
                     <CardDescription className="text-amber-900/70">
-                        Sign in to access the De-chickins admin panel
+                        Sign in to your De-chickins account
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -114,7 +90,7 @@ export default function AdminLogin() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 className="border-amber-300 focus:ring-amber-500"
-                                placeholder="admin@de-chickins.com"
+                                placeholder="you@example.com"
                             />
                         </div>
                         <div className="space-y-2">
@@ -142,18 +118,6 @@ export default function AdminLogin() {
                             {loading ? "Signing in..." : "Sign In"}
                         </Button>
                     </form>
-                    <div className="mt-4 text-center text-sm text-amber-900/70">
-                        <Button
-                            variant="link"
-                            onClick={() => router.push("/admin/signup")}
-                            className="text-amber-700 hover:underline p-0 h-auto"
-                        >
-                            Create Admin Account
-                        </Button>
-                    </div>
-                    <div className="mt-2 text-center text-sm text-amber-900/70">
-                        <p>Don't have an account? Contact the system administrator.</p>
-                    </div>
                 </CardContent>
             </Card>
         </div>

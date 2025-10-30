@@ -29,6 +29,8 @@ export default function AdminDashboard() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('Admin dashboard useEffect triggered', { isAdmin, authLoading, user: user?.email })
+
     // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
     // Uncomment the following lines to re-enable authentication:
     /*
@@ -54,20 +56,41 @@ export default function AdminDashboard() {
     */
 
     // Directly load products for development
+    console.log('Loading products for development')
     loadProducts()
   }, [isAdmin, authLoading, router, user])
 
   const loadProducts = async () => {
     setLoading(true)
+
+    // Add a timeout to ensure loading is set to false even if there's an issue
+    const timeout = setTimeout(() => {
+      console.log('Timeout reached, setting loading to false')
+      setLoading(false)
+    }, 10000) // 10 second timeout
+
     try {
+      console.log('Loading products...')
       const fetchedProducts = await getAllProducts()
+      console.log('Products loaded:', fetchedProducts.length)
       setProducts(fetchedProducts)
 
       // Calculate stats
+      console.log('Calculating stats...')
       const totalProducts = fetchedProducts.length
+      console.log('Total products:', totalProducts)
+
       const categories = [...new Set(fetchedProducts.map(p => p.category))]
-      const totalValue = fetchedProducts.reduce((sum, product) => sum + product.price, 0)
+      console.log('Categories:', categories)
+
+      const totalValue = fetchedProducts.reduce((sum, product) => {
+        console.log('Adding product price:', product.price)
+        return sum + (product.price || 0)
+      }, 0)
+      console.log('Total value:', totalValue)
+
       const averagePrice = totalProducts > 0 ? totalValue / totalProducts : 0
+      console.log('Average price:', averagePrice)
 
       setStats({
         totalProducts,
@@ -75,23 +98,28 @@ export default function AdminDashboard() {
         totalValue,
         averagePrice
       })
+      console.log('Stats calculated and set')
     } catch (error) {
       console.error("Error loading products:", error)
     } finally {
+      console.log('Finished loading products, setting loading to false')
+      clearTimeout(timeout)
       setLoading(false)
     }
   }
 
   // Get products by category for chart
   const getCategoryData = () => {
+    console.log('Calculating category data...', products.length)
     const categoryMap: Record<string, number> = {}
     products.forEach(product => {
-      categoryMap[product.category] = (categoryMap[product.category] || 0) + 1
+      const category = product.category || 'Uncategorized'
+      categoryMap[category] = (categoryMap[category] || 0) + 1
     })
-    return Object.entries(categoryMap).map(([name, count]) => ({ name, count }))
+    const result = Object.entries(categoryMap).map(([name, count]) => ({ name, count }))
+    console.log('Category data calculated:', result)
+    return result
   }
-
-  const categoryData = getCategoryData()
 
   // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
   // Uncomment the following lines to re-enable authentication:
@@ -120,6 +148,9 @@ export default function AdminDashboard() {
       </div>
     )
   }
+
+  const categoryData = getCategoryData()
+  console.log('Category data:', categoryData)
 
   return (
     <div className="space-y-6">

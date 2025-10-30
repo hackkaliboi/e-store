@@ -7,6 +7,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 // Only create the Supabase client if we have the required environment variables
 // This prevents errors during build time when environment variables are not available
-export const supabase = supabaseUrl && supabaseAnonKey
+const hasCredentials = supabaseUrl && supabaseAnonKey;
+console.log('Supabase credentials available:', hasCredentials, { supabaseUrl: supabaseUrl ? 'SET' : 'MISSING', supabaseAnonKey: supabaseAnonKey ? 'SET' : 'MISSING' });
+
+export const supabase = hasCredentials
     ? createClient(supabaseUrl, supabaseAnonKey)
     : null
+    
+if (supabase) {
+  console.log('Supabase client initialized successfully');
+} else {
+  console.log('Supabase client not initialized');
+}

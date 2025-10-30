@@ -16,6 +16,7 @@ import {
   ChevronRight
 } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
+import { isAdmin } from "@/lib/supabase/auth"
 
 export default function AdminLayout({
   children,
@@ -26,12 +27,10 @@ export default function AdminLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [isAdminUser, setIsAdminUser] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
-    // Uncomment the following lines to re-enable authentication:
-    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
@@ -45,15 +44,29 @@ export default function AdminLayout({
         const { data: { user }, error } = await client.auth.getUser()
         if (error) {
           console.error("Error getting user:", error)
+          router.push("/login")
+          return
         }
         setUser(user)
-        
-        // If no user and not on login page, redirect to login
-        if (!user && window.location.pathname !== "/admin/login") {
-          router.push("/admin/login")
+
+        // If user exists, check if they are admin
+        if (user) {
+          const adminStatus = await isAdmin(user)
+          setIsAdminUser(adminStatus)
+
+          // If not admin, redirect to main login
+          if (!adminStatus) {
+            router.push("/login")
+          }
+        }
+
+        // If no user, redirect to main login
+        if (!user) {
+          router.push("/login")
         }
       } catch (error) {
         console.error("Error checking user:", error)
+        router.push("/login")
       } finally {
         setLoading(false)
       }
@@ -61,10 +74,20 @@ export default function AdminLayout({
 
     // Listen for auth changes
     const setupAuthListener = (client: NonNullable<typeof supabase>) => {
-      const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user || null)
-        if (!session?.user && window.location.pathname !== "/admin/login") {
-          router.push("/admin/login")
+      const { data: { subscription } } = client.auth.onAuthStateChange(async (_event, session) => {
+        const user = session?.user || null
+        setUser(user)
+
+        if (user) {
+          const adminStatus = await isAdmin(user)
+          setIsAdminUser(adminStatus)
+
+          // If not admin, redirect to main login
+          if (!adminStatus) {
+            router.push("/login")
+          }
+        } else {
+          router.push("/login")
         }
       })
 
@@ -81,37 +104,26 @@ export default function AdminLayout({
         unsubscribe()
       }
     }
-    */
-
-    // Skip authentication for development
-    setLoading(false)
   }, [router])
 
   const handleLogout = async () => {
-    // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
-    // Uncomment the following lines to re-enable authentication:
-    /*
     // Check if Supabase client is initialized
     if (!supabase) {
       console.error('Supabase client not initialized')
       return
     }
-    
+
     try {
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error("Error signing out:", error)
       }
-      router.push("/admin/login")
+      router.push("/login")
+      // Refresh the page to update the header
       router.refresh()
     } catch (error) {
       console.error("Error during logout:", error)
     }
-    */
-
-    // Simple redirect for development
-    router.push("/admin/login")
-    router.refresh()
   }
 
   // Simplified navigation for product management only
@@ -121,9 +133,6 @@ export default function AdminLayout({
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ]
 
-  // DISABLE AUTH FOR DEVELOPMENT - bypass authentication check
-  // Uncomment the following lines to re-enable authentication:
-  /*
   if (loading) {
     return (
       <div className="min-h-screen bg-amber-50 flex items-center justify-center">
@@ -132,11 +141,15 @@ export default function AdminLayout({
     )
   }
 
-  // If user is not logged in and not on login page, don't render the layout
-  if (!user && window.location.pathname !== "/admin/login") {
+  // If user is not logged in, don't render the layout
+  if (!user) {
     return null
   }
-  */
+
+  // If user is not admin, don't render the admin layout
+  if (user && !isAdminUser) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-amber-50">

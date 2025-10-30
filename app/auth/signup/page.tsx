@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,20 +19,20 @@ export default function SignupPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        
+
         // Check if passwords match
         if (password !== confirmPassword) {
             setError("Passwords do not match")
             return
         }
-        
+
         setLoading(true)
         setError(null)
         setSuccess(null)
 
         try {
             const { data, error } = await signUp(email, password)
-            
+
             if (error) {
                 // Handle error properly
                 if (error instanceof Error) {
@@ -53,6 +53,41 @@ export default function SignupPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    // If signup was successful, show a button to redirect to login
+    if (success) {
+        return (
+            <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
+                <Card className="w-full max-w-md">
+                    <CardHeader className="text-center">
+                        <div className="bg-amber-100 rounded-lg w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <div className="bg-amber-600 rounded-lg w-10 h-10 flex items-center justify-center">
+                                <span className="font-bold text-white text-lg">De</span>
+                            </div>
+                        </div>
+                        <CardTitle className="text-2xl text-amber-900">Account Created</CardTitle>
+                        <CardDescription className="text-amber-900/70">
+                            Your account has been created successfully
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="p-3 rounded bg-green-100 text-green-800 text-sm mb-4">
+                            {success}
+                        </div>
+                        <p className="text-amber-900/70 text-sm mb-4">
+                            Please check your email to confirm your account before signing in.
+                        </p>
+                        <Button
+                            onClick={() => router.push("/auth/login")}
+                            className="w-full bg-amber-700 hover:bg-amber-800 text-white"
+                        >
+                            Go to Login
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -110,11 +145,6 @@ export default function SignupPage() {
                         {error && (
                             <div className="p-3 rounded bg-red-100 text-red-800 text-sm">
                                 {error}
-                            </div>
-                        )}
-                        {success && (
-                            <div className="p-3 rounded bg-green-100 text-green-800 text-sm">
-                                {success}
                             </div>
                         )}
                         <Button

@@ -3,6 +3,7 @@ import { supabase } from "./client"
 
 // Get all products from Supabase
 export const getAllProducts = async (): Promise<Product[]> => {
+    console.log('getAllProducts called')
     // Return empty array if Supabase client is not initialized
     if (!supabase) {
         console.warn('Supabase client not initialized')
@@ -10,6 +11,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
     }
 
     try {
+        console.log('Fetching products from Supabase')
         const { data, error } = await supabase
             .from('products')
             .select('*')
@@ -19,7 +21,8 @@ export const getAllProducts = async (): Promise<Product[]> => {
             console.error('Error fetching products:', error)
             return []
         }
-
+        
+        console.log('Products fetched successfully:', data?.length || 0)
         return data || []
     } catch (error) {
         console.error('Error fetching products:', error)

@@ -20,9 +20,11 @@ export default function LoginPage() {
         e.preventDefault()
         setLoading(true)
         setError(null)
+        console.log("Login form submitted")
 
         try {
             const { data, error } = await signIn(email, password)
+            console.log("Sign in result:", { data, error })
             
             if (error) {
                 // Handle error properly
@@ -35,27 +37,31 @@ export default function LoginPage() {
             } else {
                 // Check if user is admin and redirect accordingly
                 if (data?.user) {
+                    console.log("User signed in:", data.user)
                     try {
                         const adminStatus = await isAdmin(data.user)
-                        console.log("Admin status:", adminStatus)
+                        console.log("Admin status check result:", adminStatus)
                         if (adminStatus) {
                             console.log("Redirecting to admin dashboard")
                             router.push("/admin")
+                            // Use window.location for immediate redirect
+                            window.location.href = "/admin"
                         } else {
                             console.log("Redirecting to home page")
                             router.push("/")
+                            // Use window.location for immediate redirect
+                            window.location.href = "/"
                         }
-                        // Refresh the page to update the header
-                        router.refresh()
                     } catch (adminError) {
                         console.error("Error checking admin status:", adminError)
                         // Default to home page if there's an error checking admin status
                         router.push("/")
-                        router.refresh()
+                        window.location.href = "/"
                     }
                 } else {
+                    console.log("No user data, redirecting to home")
                     router.push("/")
-                    router.refresh()
+                    window.location.href = "/"
                 }
             }
         } catch (err) {
